@@ -1,0 +1,174 @@
+# Documentation: Chatbot with Azure OpenAI and DeepLake Integration
+
+## Overview
+This application implements a chatbot that retrieves information from either document-based data (using DeepLake) or summary-based data. It uses Azure OpenAI for generating text embeddings and chatbot-like responses. The chatbot adheres to professional and conversational tones, ensuring it answers based on reference data.
+
+---
+
+## Features
+
+1. **Azure OpenAI Integration**:
+   - Embedding generation with the `text-embedding-3-small` model.
+   - Text response generation using the `gpt-35-turbo` model.
+
+2. **DeepLake Integration**:
+   - Retrieves document-based information using vector search.
+
+3. **Dynamic Query Handling**:
+   - Handles both document-based and summary-based queries.
+
+4. **Session Persistence**:
+   - Saves and retrieves chat history based on user sessions.
+
+5. **Command-Line Interaction**:
+   - Allows users to provide arguments like UUID, query, and chat mode (document or summary).
+
+---
+
+## Code Components
+
+### **1. Chatbot Function**
+#### **Function: `chatbot()`**
+Generates a chatbot-like response based on user queries.
+
+**Parameters**:
+- `query` (str): User query.
+- `reference_text` (str): Text to reference for answering the query.
+- `messages` (list[dict]): Chat history.
+- `chat_with` (str): Indicates the mode ("summary" or "document").
+- `summary_dir` (str): Directory containing summary data.
+
+**Returns**:
+- `messages` (list[dict]): Updated chat history with the chatbot response appended.
+
+---
+
+### **2. Main Function**
+#### **Function: `main()`**
+Handles the command-line interaction, initializes the necessary directories, and executes the chatbot.
+
+**Command-Line Arguments**:
+- `--uuid` (str): Unique identifier for the user.
+- `--query` (str): User query.
+- `--chat_with` (str): Chat mode, either "document" or "summary".
+
+**Workflow**:
+1. Parses command-line arguments.
+2. Initializes directories for user-specific data.
+3. Queries the appropriate data source (DeepLake or summary).
+4. Calls the `chatbot()` function with relevant inputs.
+5. Writes the updated chat history to the appropriate file.
+
+---
+
+## Directories and Data Management
+
+### User-Specific Directories
+- **Base Directory**: `assets/user-{uuid}`
+  - `deeplake/`: Stores document embeddings for DeepLake.
+  - `summaries/`: Stores summary JSON files.
+  - `chat/`: Stores chat history in JSON format.
+    - `summary/messages.json`: Chat history for summary-based interactions.
+    - `doc/messages.json`: Chat history for document-based interactions.
+
+### Vector Store
+- **DeepLake Vector Store**:
+  - Stores embeddings for document-based data.
+  - Queried using the `VectorStoreQuery` class with user query embeddings.
+
+### Chat History
+- Chat history is maintained in JSON files specific to the user and chat mode.
+- Chat history is updated with each interaction.
+
+---
+
+## Key Functions
+
+### **Chatbot Functionality**
+#### **Prompt Construction**
+Constructs a detailed prompt to guide the chatbot in generating responses.
+
+- Ensures the chatbot:
+  1. Adheres to reference data.
+  2. Maintains a professional, conversational tone.
+  3. Avoids unsupported or irrelevant information.
+
+#### **Pipeline Execution**
+- Uses `LinearSyncPipeline` to execute the chatbot task.
+- Utilizes the `AzureOpenAIModel` for response generation.
+
+### **DeepLake Query Handling**
+#### **VectorStoreQuery**
+- Generates query embeddings using `query_text_embedding()`.
+- Retrieves the most relevant document nodes from the DeepLake vector store.
+
+### **Summary Handling**
+- Reads summaries from `summary.json` in the user's summary directory.
+- Appends the summary to the chat history for summary-based queries.
+
+---
+
+## Example Usage
+
+### Command-Line Execution
+```bash
+python chat.py --uuid user123 --query "What is the purpose of this document?" --chat_with document
+```
+
+### Directory Structure After Execution
+```plaintext
+assets/
+|-- user-user123/
+    |-- deeplake/
+    |   |-- Deeplake_unsummarized/
+    |-- summaries/
+    |   |-- summary.json
+    |-- chat/
+        |-- summary/
+        |   |-- messages.json
+        |-- doc/
+            |-- messages.json
+```
+
+---
+
+## Dependencies
+- **`aih_rag`**:
+  - `AzureOpenAIEmbedding`: For generating text embeddings.
+  - `DeepLakeVectorStore`: For managing vectorized document data.
+  - `VectorStoreQuery`: For querying DeepLake data.
+- **`openai`**:
+  - `AzureOpenAI`: For connecting to Azure OpenAI.
+- **`aih_automaton`**:
+  - Provides the task and pipeline framework.
+- **`dotenv`**:
+  - Loads environment variables.
+- **`rich`**:
+  - For enhanced console output.
+
+---
+
+## Limitations
+- Requires Azure OpenAI credentials.
+- Limited to the reference text or summary provided.
+- Chatbot responses are constrained to avoid unsupported or irrelevant information.
+
+---
+
+## Future Enhancements
+- Add support for multi-language queries.
+- Enable real-time updates for document embeddings.
+- Enhance the interface for better user experience.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation of document and summary-based chatbot interactions.
+  - Integrated DeepLake for document retrieval.
+  - Integrated Azure OpenAI for embeddings and responses.
+
+---
+
+For more details, refer to the module-specific documentation or contact the development team.
+

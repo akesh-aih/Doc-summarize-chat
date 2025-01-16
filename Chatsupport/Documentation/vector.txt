@@ -1,0 +1,170 @@
+# Documentation: DeepLakeManager and Utility Functions
+
+## Overview
+The `DeepLakeManager` class provides a streamlined interface for interacting with the DeepLake vector store. It enables adding nodes, querying embeddings, and managing vectorized data, making it an essential component for embedding-based applications like information retrieval and question answering.
+
+---
+
+## Features
+
+1. **DeepLake Vector Store Integration**:
+   - Seamlessly integrates with DeepLake for storing and querying vectorized data.
+
+2. **Node Management**:
+   - Add custom text nodes with embeddings to the vector store.
+
+3. **Query Execution**:
+   - Retrieve the most relevant nodes based on similarity to a query embedding.
+
+4. **Batch Processing**:
+   - Supports batch ingestion of nodes with configurable parameters.
+
+---
+
+## Class Details
+
+### **DeepLakeManager**
+A wrapper class for managing operations on the DeepLake vector store.
+
+#### **Constructor**
+```python
+__init__(self, dataset_path, overwrite=True, ingestion_batch_size=10, ingestion_num_workers=2, verbose=False)
+```
+- Initializes a DeepLake vector store.
+
+- **Parameters**:
+  - `dataset_path` (str): Path to the dataset.
+  - `overwrite` (bool): Whether to overwrite the existing dataset. Default: `True`.
+  - `ingestion_batch_size` (int): Batch size for ingestion. Default: `10`.
+  - `ingestion_num_workers` (int): Number of workers for ingestion. Default: `2`.
+  - `verbose` (bool): Whether to enable verbose logging. Default: `False`.
+
+#### **Methods**
+
+1. **`add_nodes(nodes)`**
+   - Adds nodes to the DeepLake vector store.
+   - **Parameters**:
+     - `nodes` (list): List of `TextNode` objects to add.
+   - **Returns**:
+     - List of node IDs that were added to the store.
+
+2. **`query_store(query_embedding, top_k=3)`**
+   - Queries the vector store with a provided embedding.
+   - **Parameters**:
+     - `query_embedding` (list/array): The embedding to query against.
+     - `top_k` (int): Number of top results to retrieve. Default: `3`.
+   - **Returns**:
+     - List of queried text results.
+
+---
+
+## Utility Functions
+
+### **1. `initialize_store()`**
+Initializes a `DeepLakeManager` instance with a default dataset path.
+
+- **Returns**:
+  - Instance of `DeepLakeManager`.
+
+```python
+manager = initialize_store()
+```
+
+### **2. `add_custom_nodes(manager, text_list, embedding_list)`**
+Adds custom nodes to the vector store, associating texts with their corresponding embeddings.
+
+- **Parameters**:
+  - `manager` (`DeepLakeManager`): Instance of the `DeepLakeManager` class.
+  - `text_list` (list): List of text strings to add as nodes.
+  - `embedding_list` (list): Corresponding list of embeddings for each text.
+
+- **Example**:
+```python
+add_custom_nodes(manager, ["Text 1", "Text 2"], [[0.1, 0.2], [0.3, 0.4]])
+```
+
+- **Raises**:
+  - `ValueError`: If the number of texts and embeddings do not match.
+
+### **3. `query_custom_embedding(manager, query_embedding)`**
+Queries the vector store with a user-provided embedding to retrieve relevant nodes.
+
+- **Parameters**:
+  - `manager` (`DeepLakeManager`): Instance of the `DeepLakeManager` class.
+  - `query_embedding` (list/array): The embedding to query against.
+
+- **Returns**:
+  - List of relevant texts retrieved from the vector store.
+
+- **Example**:
+```python
+results = query_custom_embedding(manager, [0.1, 0.2])
+print(results)
+```
+
+---
+
+## Example Workflow
+
+### **1. Initialize the Store**
+```python
+manager = initialize_store()
+```
+
+### **2. Add Nodes**
+```python
+text_list = ["Example text 1", "Example text 2"]
+embedding_list = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
+add_custom_nodes(manager, text_list, embedding_list)
+```
+
+### **3. Query Nodes**
+```python
+query_embedding = [0.1, 0.2, 0.3]
+results = query_custom_embedding(manager, query_embedding)
+print("Queried results:", results)
+```
+
+---
+
+## Dependencies
+- **`aih_rag.schema`**:
+  - `TextNode`: Schema for text nodes, containing `node_id`, `text`, and `embedding`.
+
+- **`aih_rag.vector_stores.deeplake`**:
+  - `DeepLakeVectorStore`: Class for managing DeepLake datasets.
+
+- **`aih_rag.vector_stores.types`**:
+  - `VectorStoreQuery`: Represents a query with embedding and similarity parameters.
+  - `VectorStoreQueryResult`: Represents query results with matched nodes.
+
+- **`os`**:
+  - For handling file paths.
+
+- **`uuid`**:
+  - To generate unique IDs for nodes.
+
+---
+
+## Limitations
+- Requires proper configuration of the DeepLake backend.
+- The number of embeddings must match the number of texts during node addition.
+- Assumes embeddings are precomputed; embedding generation is not included.
+
+---
+
+## Future Enhancements
+- Add support for multi-threaded querying.
+- Integrate embedding generation within the workflow.
+- Provide better error handling for dataset initialization and queries.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation with support for adding and querying nodes in DeepLake.
+
+---
+
+For additional details, refer to the DeepLake documentation or the `aih_rag` library documentation.
+

@@ -1,0 +1,149 @@
+# Documentation: Document Summarization App
+
+## Overview
+The Document Summarization App is a Streamlit-based application designed to process and summarize PDF documents. Users can upload multiple documents, which are processed into manageable chunks and summarized using advanced summarization techniques. Summarized data and document metadata are stored in a structured format for easy access and further processing.
+
+---
+
+## Features
+1. **User-Friendly Interface**:
+   - Allows users to upload multiple PDF documents.
+   - Displays real-time status updates using toasts.
+
+2. **Automated Directory Management**:
+   - Creates user-specific directories for storing documents, summaries, and processed data.
+
+3. **Asynchronous Processing**:
+   - Processes documents and generates summaries asynchronously to improve performance.
+
+4. **Summary Generation**:
+   - Generates individual and overall summaries for uploaded documents.
+
+5. **DeepLake Integration**:
+   - Stores vectorized document chunks in DeepLake for advanced querying and retrieval.
+
+6. **Feedback and Retry Mechanism**:
+   - Supports retry functionality to update summaries based on user feedback.
+
+---
+
+## Workflow
+
+### **1. User Initialization**
+- Generates a unique user ID if not already present in the session state.
+- Allows users to update their username via the sidebar.
+
+### **2. File Upload**
+- Users can upload multiple PDF documents via the file uploader.
+- Only PDF files are supported.
+
+### **3. Document Processing**
+- Uploaded files are saved in user-specific directories under `assets/user-{user_id}/content`.
+- Files are processed into text chunks using the `file_loader` function.
+
+### **4. Summary Generation**
+- Summaries for individual chunks are generated using `async_summarize_document`.
+- An overall summary is created from the individual summaries using `generate_summary`.
+- Both summaries and metadata (e.g., processing time, number of summaries) are saved in JSON format in the `summaries` directory.
+
+### **5. DeepLake Integration**
+- Vectorized chunks of the documents are stored in DeepLake for further use.
+- The vectorized data is stored in the `deeplake` directory under `Deeplake_unsummarized`.
+
+### **6. Feedback and Retry**
+- Summaries can be refined and updated using the `retry_summary_update` function based on user feedback.
+
+---
+
+## Directory Structure
+
+### **Base Directory**: `assets/user-{user_id}`
+- `content/`: Stores uploaded documents.
+- `deeplake/`: Stores vectorized document chunks in DeepLake.
+- `summaries/`: Stores JSON files containing summaries and metadata.
+- `chat/`: Reserved for future use for storing chat history.
+
+---
+
+## Dependencies
+
+### **Python Libraries**
+- `streamlit`: Provides the user interface.
+- `dotenv`: Loads environment variables.
+- `asyncio`: Handles asynchronous operations.
+- `time` and `os`: Manage file paths and processing time.
+- `source.utils`, `source.vector_store.utils`: Custom utilities for file processing and vector store management.
+- `aih_rag.vector_stores.deeplake`: Integrates with DeepLake for vectorized data storage.
+- `summarize`: Provides functions for document summarization.
+
+---
+
+## Functions
+
+### **1. `create_user_directories`**
+- Ensures user-specific directories are created.
+
+### **2. `file_loader`**
+- Processes uploaded PDF documents into manageable text chunks.
+
+### **3. `async_summarize_document`**
+- Generates summaries for individual document chunks asynchronously.
+
+### **4. `generate_summary`**
+- Produces an overall summary from the individual summaries.
+
+### **5. `chunk_text`**
+- Splits text into smaller chunks with optional overlap for vectorization.
+
+### **6. `async_create_nodes`**
+- Converts text chunks into vectorized nodes for storage in DeepLake.
+
+### **7. `retry_summary_update`**
+- Refines and updates summaries based on user feedback.
+
+---
+
+## Outputs
+
+### **Generated Files**
+- `summary_title_dict_list.json`: Contains individual summaries for document chunks.
+- `summary.json`: Stores the overall summary along with metadata (e.g., processing time, document paths).
+
+---
+
+## Limitations
+- Only supports PDF files.
+- Requires pre-configured DeepLake storage paths.
+- Relies on external modules (e.g., `source.loaders.file_loaders`) for file processing.
+
+---
+
+## Future Enhancements
+- Support for additional file formats (e.g., DOCX, TXT).
+- Real-time progress tracking for long-running processes.
+- Improved error handling and user feedback.
+- Integration with chat history for conversational summarization.
+
+---
+
+## Example Usage
+
+### **Running the Application**
+1. Install required dependencies.
+2. Run the application using:
+   ```bash
+   streamlit run summarize_app.py
+   ```
+3. Upload PDF documents and view the generated summaries in the Streamlit interface.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation of the Document Summarization App.
+  - Support for PDF file uploads and asynchronous processing.
+  - Integration with DeepLake for vectorized data storage.
+
+---
+
+For further assistance, refer to the module documentation for `source`, `summarize`, and `aih_rag`.

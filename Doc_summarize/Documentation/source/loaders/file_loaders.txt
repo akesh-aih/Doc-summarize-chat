@@ -1,0 +1,135 @@
+# Documentation for File Loaders and Utilities
+
+## Overview
+This module provides utility functions to process and load content from various document formats (e.g., PDF, DOCX) for further analysis, processing, or summarization. The primary functionalities include reading PDF and DOCX files, converting them into text, and chunking the text into manageable parts for downstream tasks.
+
+---
+
+## Constants
+
+- `CHUNK_SIZE`: Defines the maximum size of each chunk when splitting text.
+- `OVERLAP`: Defines the overlap between consecutive chunks to maintain context.
+
+---
+
+## Functions
+
+### `read_pdf_in_markdown(pdf_path: str, **kwargs)`
+
+**Description:**
+Reads a PDF file and converts its content into markdown format asynchronously.
+
+**Parameters:**
+- `pdf_path (str)`: Path to the PDF file.
+- `**kwargs`: Additional keyword arguments for configuration.
+
+**Returns:**
+- `md_text (str)`: The PDF content in markdown format.
+
+---
+
+### `read_docx(docx_path: str)`
+
+**Description:**
+Reads a DOCX file and extracts its content as plain text.
+
+**Parameters:**
+- `docx_path (str)`: Path to the DOCX file.
+
+**Returns:**
+- `text (str)`: The plain text content of the DOCX file.
+
+---
+
+### `read_pdf(pdf_path: str)`
+
+**Description:**
+Reads a PDF file and extracts its text content.
+
+**Parameters:**
+- `pdf_path (str)`: Path to the PDF file.
+
+**Returns:**
+- `text (str)`: The text content extracted from the PDF.
+
+---
+
+### `file_loader(file_path: str)`
+
+**Description:**
+Determines the file type (PDF or DOCX) and loads its content. For PDFs, it reads the content and splits it into manageable chunks. For DOCX files, it extracts text and chunks it.
+
+**Parameters:**
+- `file_path (str)`: Path to the file to be loaded.
+
+**Returns:**
+- `chunks (list[str])`: List of text chunks extracted from the file.
+
+**Supported File Types:**
+- PDF (`.pdf`)
+- DOCX (`.docx`, `.doc`)
+
+---
+
+### `load_files_async(list_of_files: list[str]) -> list[str]`
+
+**Description:**
+Loads multiple files asynchronously and processes their content into chunks.
+
+**Parameters:**
+- `list_of_files (list[str])`: List of file paths to be loaded.
+
+**Returns:**
+- `list[str]`: A list containing the text chunks of all loaded files.
+
+---
+
+## Dependencies
+
+- `pymupdf4llm`: For converting PDF content into markdown format.
+- `docx`: For reading DOCX files.
+- `pymupdf`: For extracting text content from PDF files.
+- `asyncio`: For asynchronous execution.
+- `os`: For file path operations.
+- `retry_async` and `retry_sync` from `utils`: For retrying operations in case of failures.
+
+---
+
+## Example Usage
+
+### Reading and Chunking a PDF
+```python
+from file_loaders import read_pdf
+
+pdf_path = "example.pdf"
+text = await read_pdf(pdf_path)
+print(text)
+```
+
+### Loading Multiple Files Asynchronously
+```python
+from file_loaders import load_files_async
+
+file_paths = ["file1.pdf", "file2.docx"]
+contents = await load_files_async(file_paths)
+for content in contents:
+    print(content)
+```
+
+---
+
+## Notes
+- The `retry_async` and `retry_sync` decorators are used to handle transient failures during file reading or processing.
+- Ensure that `pymupdf`, `docx`, and other dependencies are installed and available in your environment.
+- Currently, only `.pdf` and `.docx` files are supported. Unsupported file types will return an empty list.
+
+---
+
+## Main Execution
+
+The script includes a `__main__` section to demonstrate the functionality of the `read_pdf` and `read_pdf_in_markdown` functions. Replace the `pdf_path` with the desired file path to test.
+
+```python
+if __name__ == "__main__":
+    pdf_path = "example.pdf"
+    print((await read_pdf_in_markdown(pdf_path,)))

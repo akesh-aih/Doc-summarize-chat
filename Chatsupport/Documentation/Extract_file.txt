@@ -1,0 +1,181 @@
+# Documentation: FileTextExtractor Class
+
+## Overview
+The `FileTextExtractor` class provides a unified interface for extracting text content from various file types. This utility supports a wide range of file formats, such as PDFs, text files, images, spreadsheets, and more, with specialized processing logic for each format.
+
+---
+
+## Features
+
+1. **Supported File Types**:
+   - **Text Documents**: `.pdf`, `.txt`, `.docx`, `.rtf`
+   - **Web Files**: `.html`, `.htm`
+   - **Images**: `.jpg`, `.jpeg`, `.png`, `.tiff`
+   - **Spreadsheets**: `.csv`, `.xls`, `.xlsx`, `.xlsb`
+
+2. **Text Extraction**:
+   - Uses libraries like `pdfplumber`, `docx2txt`, `BeautifulSoup`, `striprtf`, `pytesseract`, and `pandas` for efficient text extraction.
+
+3. **Custom Exceptions**:
+   - `FileProcessingError`: Raised for errors during file processing.
+   - `UnsupportedFileTypeError`: Raised for unsupported file formats.
+
+4. **Error Handling**:
+   - Comprehensive error handling with descriptive exception messages for each file type.
+
+---
+
+## Class Details
+
+### **FileTextExtractor**
+A class for extracting text from various file types.
+
+#### **Methods**
+
+1. **`process_pdf_file(filepath: str) -> str`**
+   - Extracts text from a PDF file.
+   - **Library**: `pdfplumber`
+   - **Error Handling**: Raises `FileProcessingError` if extraction fails.
+   
+2. **`process_text_file(filepath: str) -> str`**
+   - Reads the content of a plain text file.
+   - **Error Handling**: Raises `FileProcessingError` if reading fails.
+
+3. **`process_docx_file(filepath: str) -> str`**
+   - Extracts text from a DOCX file.
+   - **Library**: `docx2txt`
+   - **Error Handling**: Raises `FileProcessingError` if extraction fails.
+
+4. **`process_html_file(filepath: str) -> str`**
+   - Extracts text from an HTML file by parsing the DOM.
+   - **Library**: `BeautifulSoup`
+   - **Error Handling**: Raises `FileProcessingError` if parsing fails.
+
+5. **`process_rtf_file(filepath: str) -> str`**
+   - Extracts text from an RTF file.
+   - **Library**: `striprtf`
+   - **Error Handling**: Raises `FileProcessingError` if extraction fails.
+
+6. **`process_image_file(filepath: str) -> str`**
+   - Extracts text from an image using OCR.
+   - **Library**: `pytesseract`
+   - **Error Handling**: Raises `FileProcessingError` if OCR processing fails.
+
+7. **`process_csv_file(filepath: str) -> str`**
+   - Reads the content of a CSV file and converts it to plain text.
+   - **Library**: `pandas`
+   - **Error Handling**: Raises `FileProcessingError` if reading fails.
+
+8. **`process_excel_file(filepath: str) -> str`**
+   - Reads the content of Excel files (`.xls`, `.xlsx`) and converts them to plain text.
+   - **Library**: `pandas`
+   - **Error Handling**: Raises `FileProcessingError` if reading fails.
+
+9. **`process_xlsb_file(filepath: str) -> str`**
+   - Reads content from XLSB files and converts them to plain text.
+   - **Library**: `pyxlsb`
+   - **Error Handling**: Raises `FileProcessingError` if reading fails.
+
+10. **`extract_text_from_file(path: str) -> str`**
+    - Determines the file type based on its extension and invokes the corresponding processing method.
+    - **Error Handling**: Raises `UnsupportedFileTypeError` if the file type is not supported.
+
+#### **Supported File Extensions**
+```python
+FILE_PROCESSORS = {
+    ".pdf": process_pdf_file,
+    ".txt": process_text_file,
+    ".docx": process_docx_file,
+    ".html": process_html_file,
+    ".htm": process_html_file,
+    ".rtf": process_rtf_file,
+    ".jpg": process_image_file,
+    ".png": process_image_file,
+    ".jpeg": process_image_file,
+    ".tiff": process_image_file,
+    ".csv": process_csv_file,
+    ".xls": process_excel_file,
+    ".xlsx": process_excel_file,
+    ".xlsb": process_xlsb_file,
+}
+```
+
+---
+
+## Usage
+
+### **Basic Example**
+```python
+from file_text_extractor import FileTextExtractor
+
+file_extractor = FileTextExtractor()
+
+# Extract text from a file
+file_path = "path/to/your/file.pdf"
+try:
+    extracted_text = file_extractor.extract_text_from_file(file_path)
+    print(extracted_text)
+except UnsupportedFileTypeError as e:
+    print(f"Unsupported file type: {e}")
+except FileProcessingError as e:
+    print(f"File processing error: {e}")
+```
+
+---
+
+## Dependencies
+- **Libraries**:
+  - `os`: File handling.
+  - `docx2txt`: DOCX file processing.
+  - `BeautifulSoup`: HTML parsing.
+  - `striprtf`: RTF text extraction.
+  - `pdfplumber`: PDF processing.
+  - `PIL`/`pytesseract`: OCR for image files.
+  - `pandas`: CSV and Excel file processing.
+  - `pyxlsb`: XLSB file processing.
+- Ensure Tesseract OCR is installed and configured for image processing.
+
+---
+
+## Error Handling
+- **UnsupportedFileTypeError**:
+  - Raised when the file type is not supported.
+- **FileProcessingError**:
+  - Raised for errors during file processing, with detailed exception messages.
+
+---
+
+## Limitations
+- The accuracy of OCR (`process_image_file`) depends on the quality of the input image and Tesseract configuration.
+- Extraction from XLSB files assumes the first row is the header.
+- RTF parsing is limited to the capabilities of the `striprtf` library.
+
+---
+
+## Directory Structure
+```plaintext
+root/
+|-- file_text_extractor.py
+|-- requirements.txt
+```
+
+---
+
+## Additional Notes
+- Ensure all dependencies are installed using `pip install -r requirements.txt`.
+- Tesseract OCR must be installed separately and added to the system PATH.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation with support for multiple file types.
+  - Custom error handling for unsupported and failed file processing.
+
+---
+
+## Future Enhancements
+- Add support for additional file types like `.md` (Markdown) or `.epub`.
+- Improve RTF and HTML text extraction for edge cases.
+- Include multi-threaded processing for handling large batches of files.
+

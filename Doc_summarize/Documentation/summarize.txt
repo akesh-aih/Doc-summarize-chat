@@ -1,0 +1,142 @@
+# Documentation for Document Summarization System
+
+This script provides a comprehensive solution for summarizing and storing document content, particularly for PDF files. The script uses advanced AI models, like Azure OpenAI, to summarize document content, generate titles, and store both summarized and unsummarized data in a vector store.
+
+## Overview
+
+### Key Features:
+1. **Document Chunking:** Breaks documents into manageable chunks for processing.
+2. **Summarization:** Generates concise summaries and titles for document chunks.
+3. **Vector Store Integration:** Stores both summarized and unsummarized chunks in DeepLake Vector Stores.
+4. **Async Operations:** Leverages asynchronous processing for faster operations.
+5. **Custom Retry Logic:** Ensures reliable operation with retry mechanisms.
+
+## Requirements
+
+- Python 3.8+
+- Required Python Packages:
+  - `pdfplumber`
+  - `pandas`
+  - `dotenv`
+  - `asyncio`
+  - `rich`
+  - `aih_rag`
+  - `source` module (custom library used in the script)
+
+- Environment Variables:
+  - `API_Key`: Azure OpenAI API Key
+  - `End_point`: Azure OpenAI Endpoint
+  - `API_version`: Azure OpenAI API Version
+
+## Script Workflow
+
+### 1. **User Directory Initialization**
+The `create_user_directories` function ensures that all necessary directories are created for storing user-specific data.
+
+#### Code Snippet:
+```python
+def create_user_directories(root, uuid):
+    directories_to_create = [
+        f"user-{uuid}",
+        "deeplake",
+        "summaries",
+        "content",
+        "chat",
+        "chat/doc",
+        "chat/summary",
+        "systems",
+    ]
+    user_dir = os.path.join(root, "assets", f"user-{uuid}")
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir)
+
+    for directory in directories_to_create:
+        path = os.path.join(user_dir, directory)
+        if not os.path.exists(path):
+            os.makedirs(path)
+```
+
+### 2. **Document Chunking**
+The script processes document chunks and ensures that the content is divided into smaller, manageable sections. This is done using the `chunk_text` and `file_loader` functions.
+
+#### Example Usage:
+```python
+chunks = await asyncio.gather(*(file_loader(file_path) for file_path in pdf_paths))
+overall_chunks = []
+for chunk in chunks:
+    sub_chunks = await chunk_text(chunk, chunk_size=1000, overlap=50)
+    overall_chunks.extend(sub_chunks)
+```
+
+### 3. **Summarization**
+Each chunk is summarized using Azure OpenAI models. Summaries are generated both with and without pipelines depending on user requirements.
+
+#### Function:
+```python
+async def generate_chunk_summary_and_title(chunk):
+    # Generates a title and summary for a given chunk
+    ...
+```
+
+### 4. **Vector Store Integration**
+The summarized and unsummarized data are stored in DeepLake Vector Stores for efficient retrieval.
+
+#### Code Snippet:
+```python
+store_unsummarized = DeepLakeVectorStore(
+    dataset_path=dataset_path_unsummarized, overwrite=True
+)
+nodes_unsummarized = await async_create_nodes(overall_chunks)
+await store_unsummarized.async_add(nodes_unsummarized)
+```
+
+### 5. **Retry Logic**
+Custom retry decorators are used to handle transient errors during summarization and data processing.
+
+#### Example:
+```python
+@retry_async(backoff=1.17, retries=1, fallback="")
+async def generate_chunk_summary_and_title(chunk):
+    ...
+```
+
+## Command-Line Interface (CLI)
+The script accepts command-line arguments for specifying user ID and document paths.
+
+### Example:
+```bash
+python summarize.py --uuid id12423 --document_paths \
+    "path/to/document1.pdf" "path/to/document2.pdf"
+```
+
+### Arguments:
+- `--uuid`: Unique identifier for the user.
+- `--document_paths`: Paths to the PDF documents to be processed.
+
+## Outputs
+
+1. **Summarized Data:** Stored in the `summaries` directory as JSON files.
+2. **Vector Store Data:** Stored in DeepLake Vector Stores for future queries.
+3. **Process Metadata:** Tracks the progress and timing of document processing.
+
+## Example Output File Structure
+```
+assets/
+  user-{uuid}/
+    deeplake/
+      Deeplake_unsummarized/
+    summaries/
+      summary_title_dict_list.json
+      summary.json
+    content/
+      document1.pdf
+      document2.pdf
+    systems/
+      process.json
+```
+
+## Future Improvements
+
+1. Add support for other document types (e.g., Word, Excel).
+2. Implement a graphical user interface (GUI) for easier interaction.
+3. Improve summarization logic to handle larger datasets more efficiently.

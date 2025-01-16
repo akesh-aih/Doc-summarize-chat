@@ -1,0 +1,113 @@
+### Documentation for Retry and Text Chunking Utilities
+
+#### Overview
+This module provides utility functions for:
+- Splitting text into overlapping chunks.
+- Retrying asynchronous and synchronous function calls upon encountering specific exceptions.
+
+The utilities are:
+1. `chunk_text`: Splits a given text into overlapping chunks.
+2. `retry_async`: A decorator to retry asynchronous functions with customizable retry logic.
+3. `retry_sync`: A decorator to retry synchronous functions with similar customizable retry logic.
+
+---
+
+### `chunk_text`
+
+#### Description
+Asynchronously splits a string into overlapping chunks of a specified size.
+
+#### Parameters
+- **text** (`str`): The input string to be chunked.
+- **chunk_size** (`int`, default=`1000`): The size of each chunk in characters.
+- **overlap** (`int`, default=`100`): The overlap between consecutive chunks in characters.
+
+#### Returns
+- `list[str]`: A list of text chunks.
+
+#### Example Usage
+```python
+import asyncio
+text = "This is a long text that needs to be split into smaller overlapping chunks."
+chunks = asyncio.run(chunk_text(text, chunk_size=10, overlap=5))
+print(chunks)
+# Output: ['This is a ', 'is a long ', 'a long tex', 'long text ', ...]
+```
+
+---
+
+### `retry_async`
+
+#### Description
+A decorator to retry an asynchronous function call upon encountering specified exceptions. The decorator allows for a delay between retries and supports exponential backoff with jitter.
+
+#### Parameters
+- **exceptions** (`tuple`, default=`(Exception,)`): The exceptions to catch and retry on.
+- **retries** (`int`, default=`3`): The number of retry attempts.
+- **delay** (`float`, default=`1`): The initial delay between retries in seconds.
+- **fallback** (any, default=`None`): The value to return if all retries are exhausted.
+- **backoff** (`float`, default=`2`): The exponential backoff multiplier.
+- **logger** (`Logger`, optional): A logger instance to log retry attempts and failures.
+
+#### Returns
+- The return value of the wrapped function if successful.
+- `fallback` if all retries are exhausted and a fallback value is provided.
+
+#### Example Usage
+```python
+import asyncio
+
+@retry_async(retries=5, delay=1, backoff=2)
+async def unreliable_task():
+    if random.random() < 0.7:
+        raise ValueError("Random failure")
+    return "Success!"
+
+result = asyncio.run(unreliable_task())
+print(result)
+```
+
+---
+
+### `retry_sync`
+
+#### Description
+A decorator to retry a synchronous function call upon encountering specified exceptions. Similar to `retry_async`, this decorator supports delay, exponential backoff, and fallback values.
+
+#### Parameters
+- **exceptions** (`tuple`, default=`(Exception,)`): The exceptions to catch and retry on.
+- **retries** (`int`, default=`3`): The number of retry attempts.
+- **delay** (`float`, default=`1`): The initial delay between retries in seconds.
+- **fallback** (any, default=`None`): The value to return if all retries are exhausted.
+- **backoff** (`float`, default=`1.17`): The exponential backoff multiplier.
+
+#### Returns
+- The return value of the wrapped function if successful.
+- `fallback` if all retries are exhausted and a fallback value is provided.
+
+#### Example Usage
+```python
+@retry_sync(retries=3, delay=2, backoff=1.5)
+def unreliable_function():
+    if random.random() < 0.8:
+        raise ValueError("Random failure")
+    return "Function succeeded!"
+
+result = unreliable_function()
+print(result)
+```
+
+---
+
+### Key Features
+1. **Asynchronous Retry**: Handles retries for coroutine functions with exponential backoff and optional jitter.
+2. **Synchronous Retry**: Similar functionality for regular synchronous functions.
+3. **Fallback Handling**: Provides a fallback value when retries are exhausted.
+4. **Customizable Parameters**: Configure retries, delay, backoff, and exceptions.
+
+---
+
+### Notes
+- `retry_async` uses `asyncio.sleep` for delays, making it suitable for asynchronous workflows.
+- Both `retry_async` and `retry_sync` support exponential backoff with jitter for robustness in retrying transient errors.
+- For critical applications, consider logging retry attempts using the `logger` parameter.

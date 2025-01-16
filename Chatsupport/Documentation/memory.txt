@@ -1,0 +1,175 @@
+# Documentation: RedisCache Class
+
+## Overview
+The `RedisCache` class provides a utility for managing caching operations in Redis. It enables storing, retrieving, and managing query-response pairs, which is particularly useful for caching chatbot responses or other frequently accessed data. This implementation uses the Python `redis` library.
+
+---
+
+## Features
+
+1. **Redis Client Initialization**:
+   - Connects to a Redis server using specified host, port, and database (default: `localhost:6379, db=0`).
+
+2. **Caching Operations**:
+   - Store query-response pairs.
+   - Retrieve cached responses for queries.
+   - Delete specific cached responses.
+   - Clear all cached data in the Redis database.
+
+3. **Logging**:
+   - Integrates with `loguru` to provide detailed debug-level logs for all operations.
+
+---
+
+## Class Details
+
+### **RedisCache**
+A class for managing caching operations in Redis.
+
+#### **Constructor**
+```python
+__init__(self, host='localhost', port=6379, db=0)
+```
+- Initializes a Redis client.
+- **Parameters**:
+  - `host` (str): The Redis server host. Default: `localhost`.
+  - `port` (int): The Redis server port. Default: `6379`.
+  - `db` (int): The Redis database index. Default: `0`.
+
+#### **Methods**
+
+1. **`check_cached_response(query)`**
+   - Checks if a query is cached in Redis.
+   - **Parameters**:
+     - `query` (str): The query string to check in the cache.
+   - **Returns**:
+     - Cached response (str) if the query exists in the cache, or `None` if not found.
+   - **Logs**:
+     - Debug logs for cache hit or miss.
+
+2. **`cache_response(query, response)`**
+   - Stores a query-response pair in Redis.
+   - **Parameters**:
+     - `query` (str): The query string.
+     - `response` (str): The response string to cache.
+   - **Logs**:
+     - Debug log for successful caching.
+     - Error log if caching fails.
+
+3. **`delete_cached_response(query)`**
+   - Deletes a cached response for a specific query in Redis.
+   - **Parameters**:
+     - `query` (str): The query string to delete from the cache.
+   - **Logs**:
+     - Debug log for successful deletion.
+     - Error log if deletion fails.
+
+4. **`clear_all_cache()`**
+   - Clears all cached data in the Redis database.
+   - **Logs**:
+     - Debug log for successful clearing of cache.
+     - Error log if clearing fails.
+
+---
+
+## Usage Examples
+
+### **Basic Initialization**
+```python
+from redis_cache import RedisCache
+
+# Initialize the RedisCache instance
+cache = RedisCache(host='localhost', port=6379, db=0)
+```
+
+### **Caching and Retrieving Responses**
+```python
+# Store a query-response pair in the cache
+query = "What is Redis?"
+response = "Redis is an in-memory data structure store used as a database, cache, and message broker."
+cache.cache_response(query, response)
+
+# Retrieve the cached response
+cached_response = cache.check_cached_response(query)
+if cached_response:
+    print("Cached Response:", cached_response)
+else:
+    print("No cached response found.")
+```
+
+### **Deleting a Cached Response**
+```python
+# Delete the cached response for a query
+cache.delete_cached_response("What is Redis?")
+```
+
+### **Clearing All Cache**
+```python
+# Clear all cached data in Redis
+def clear_cache():
+    cache.clear_all_cache()
+    print("Cache cleared successfully.")
+```
+
+---
+
+## Dependencies
+- `redis`: Python Redis client library for interacting with the Redis server.
+- `loguru`: For logging detailed debug and error messages.
+
+Install the dependencies using:
+```bash
+pip install redis loguru
+```
+
+---
+
+## Error Handling
+- **Connection Errors**:
+  - If the Redis server is unreachable, operations will raise connection errors.
+
+- **Caching/Deletion Errors**:
+  - Logs detailed error messages for issues during caching or deletion.
+
+---
+
+## Logging
+- Logs all operations (cache hits, misses, additions, deletions, clearing) with debug-level granularity using `loguru`.
+
+### Example Log Messages
+- **Cache Hit**: "Cache hit! Returning cached response."
+- **Cache Miss**: "Cache miss. Query not found in cache."
+- **Caching Success**: "Cached response for query: {query}"
+- **Deletion Success**: "Deleted cached response for query: {query}"
+
+---
+
+## Redis Configuration
+- **Default Configuration**:
+  - Host: `localhost`
+  - Port: `6379`
+  - Database: `0`
+
+- **Custom Configuration**:
+  - Specify custom host, port, or database during initialization:
+  ```python
+  cache = RedisCache(host='custom-host', port=6380, db=1)
+  ```
+
+---
+
+## Future Enhancements
+- Add support for setting expiration times for cached responses.
+- Enable namespacing for cache keys to avoid conflicts.
+- Implement bulk caching and retrieval methods.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation with basic caching, retrieval, deletion, and clearing functionality.
+
+---
+
+For more details, consult the Redis official documentation: [Redis Documentation](https://redis.io/docs/)
+

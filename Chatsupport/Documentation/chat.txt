@@ -1,0 +1,157 @@
+# Documentation: Chatbot Query Processing System
+
+## Overview
+This document provides an in-depth explanation of the Chatbot Query Processing system. The application processes user queries, extracts relevant content from datasets, generates embeddings, and provides responses in a structured, professional chatbot-like format. It is designed to integrate with Azure OpenAI services and DeepLake for dataset management.
+
+---
+
+## Features
+
+### 1. **File and Dataset Management**
+- **Dynamic Dataset Creation**:
+  - User-specific datasets.
+  - Content-specific datasets.
+- **File Processing**:
+  - Supported formats: `pdf`, `txt`, `csv`, `docx`, and more.
+  - Chunking of text with overlap for better embedding representation.
+
+### 2. **Embeddings and Querying**
+- Uses Azure OpenAI's embedding model (`text-embedding-3-small`) for generating text embeddings.
+- Enables querying multiple datasets to find relevant chunks based on input queries.
+
+### 3. **Chatbot Response Generation**
+- Processes queries and retrieves relevant chunks from datasets.
+- Generates chatbot responses using Azure OpenAI's chat completion API.
+- Stores responses in Redis for caching.
+
+### 4. **Command-Line Interface**
+- Supports running the program via CLI with user-defined arguments.
+- Command-line parameters include user ID, query, file paths, and output paths.
+
+---
+
+## Application Structure
+
+### **Key Components**
+1. **Environment Configuration**
+   - Loads Azure OpenAI credentials using `dotenv`.
+
+2. **Dataset Management**
+   - `USER_DATASET_FILE`: Tracks user-specific dataset paths.
+   - Functions:
+     - `get_user_dataset_path`: Retrieve dataset path for a user.
+     - `update_user_dataset_path`: Update or create a user-specific dataset mapping.
+     - `create_dataset_path`: Generate dataset paths for content or user-specific datasets.
+
+3. **File Processing**
+   - `FileTextExtractor`: Extracts text from various file formats.
+   - `chunk_text`: Splits text into overlapping chunks.
+   - `process_and_store_files`: Processes files and stores embeddings in a DeepLake dataset.
+
+4. **Query Processing**
+   - `fetch_relevant_chunks`: Retrieves relevant content chunks from datasets using query embeddings.
+   - `generate_chatbot_response`: Combines relevant chunks and query to generate a chatbot response.
+
+5. **Redis Cache**
+   - `RedisCache`: Used to cache responses for faster retrieval of frequently asked queries.
+
+---
+
+## Key Functions
+
+### **1. `load_user_dataset_mapping()`**
+Loads the user-to-dataset mapping from a JSON file (`user_dataset.json`).
+
+### **2. `save_user_dataset_mapping(mapping)`**
+Saves the updated user-to-dataset mapping back to the JSON file.
+
+### **3. `get_user_dataset_path(user_id)`**
+Retrieves the dataset path for a specific user ID.
+
+### **4. `update_user_dataset_path(user_id, dataset_path)`**
+Updates the dataset mapping for a given user ID and saves the updated mapping.
+
+### **5. `create_dataset_path(base_dir, subfolder, user_id=None)`**
+Generates a dataset path for content or user-specific datasets. Includes an option for unique user-specific datasets using UUIDs.
+
+### **6. `chunk_text(text, chunk_size=1000, overlap=100)`**
+Splits text into overlapping chunks to maximize information retention during embedding generation.
+
+### **7. `initialize_store(dataset_path, overwrite=False)`**
+Initializes a DeepLakeManager for managing datasets.
+
+### **8. `process_and_store_files(file_paths, dataset_path, overwrite=False)`**
+Processes text files and stores their embeddings in the specified dataset path.
+
+### **9. `fetch_relevant_chunks(query, dataset_paths)`**
+Fetches relevant content chunks from multiple datasets based on the query embedding.
+
+### **10. `generate_chatbot_response(user_id, input_path, query, file_paths=[], base_dir="temp")`**
+- Core function that:
+  1. Checks for cached responses.
+  2. Processes user-provided files or static content.
+  3. Retrieves relevant content chunks.
+  4. Generates a chatbot response using Azure OpenAI chat completions.
+
+---
+
+## Command-Line Interface
+
+### Arguments
+| Argument         | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| `--user_id`      | Unique user ID (required).                                                 |
+| `--input_path`   | Single file path for processing.                                           |
+| `--query`        | User's query (required).                                                   |
+| `--uuid_path`    | Path to save the generated response JSON file (required).                  |
+| `--file_paths`   | JSON file containing multiple file paths for processing (optional).        |
+
+### Example Commands
+
+1. **Basic Query**:
+```bash
+python chat.py --user_id user123 --query "Tell me about long RAG projects." --uuid_path output.json
+```
+
+2. **Process User File and Query**:
+```bash
+python chat.py --user_id user123 --input_path "path/to/file.pdf" --query "Explain this file." --uuid_path output.json
+```
+
+3. **Process Multiple Files**:
+```bash
+python chat.py --user_id user123 --file_paths file_paths.json --query "Summarize the documents." --uuid_path output.json
+```
+
+---
+
+## Error Handling
+- **FileNotFoundError**:
+  - Raised when files or directories do not exist.
+- **JSONDecodeError**:
+  - Raised when there is an issue reading or parsing JSON files.
+- **General Exceptions**:
+  - Captures unexpected issues and logs detailed error messages.
+
+---
+
+## Directory Structure
+```plaintext
+root/
+|-- chat.py
+|-- vector.py
+|-- extract_text.py
+|-- structured_output.py
+|-- memory.py
+|-- user_dataset.json
+|-- .env
+|-- logs/
+```
+
+---
+
+## Additional Notes
+- Ensure all required environment variables (API keys, endpoints) are properly configured in the `.env` file.
+- Logs are managed using `loguru` for detailed debugging.
+- Redis must be running for caching to function correctly.
+

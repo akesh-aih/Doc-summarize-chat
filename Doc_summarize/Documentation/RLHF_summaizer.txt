@@ -1,0 +1,161 @@
+# Documentation: Retry Summary Update with User Feedback
+
+## Overview
+This script defines a function `retry_summary_update` that updates a given summary based on user feedback. It uses Azure OpenAI for generating updated summaries in conjunction with the `aih_automaton` library to handle task orchestration via agents and pipelines. The process ensures user feedback is appropriately incorporated into the summary while adhering to specific formatting and content guidelines.
+
+---
+
+## Features
+
+1. **Azure OpenAI Integration**:
+   - Utilizes Azure OpenAI to generate text updates for summaries.
+
+2. **Feedback Incorporation**:
+   - Incorporates user feedback to refine and update summaries.
+
+3. **Automated Pipeline**:
+   - Implements a pipeline using `LinearSyncPipeline` for task execution.
+
+4. **Formatting and Content Rules**:
+   - Adheres to specific markdown and formatting guidelines for the updated summary.
+
+---
+
+## Key Function
+
+### **`retry_summary_update`**
+Updates the given summary based on user feedback and additional context.
+
+#### **Parameters**
+- `summary` (str): The existing summary to be updated.
+- `feedback_from_user` (str): Feedback provided by the user to improve the summary.
+- `previous_feedbacks` (List, optional): List of previous user feedbacks for consideration. Default: `None`.
+- `additional_context` (str, optional): Additional context to guide the updates. Default: `None`.
+
+#### **Returns**
+- `Summary` (str): The updated summary with the user's feedback incorporated.
+
+#### **Workflow**
+1. Constructs a user prompt incorporating the provided summary, user feedback, and additional context.
+2. Creates detailed instructions for the agent to follow during summary updates.
+3. Defines an agent (`Agent`) with the role of "Summary updater with Human Feedback Agent".
+4. Creates a task (`Task`) for updating the summary using the Azure OpenAI model.
+5. Executes the task using a `LinearSyncPipeline`.
+6. Returns the updated summary as output.
+
+---
+
+## Detailed Components
+
+### **Prompt Construction**
+The user prompt includes:
+- The summary to be updated.
+- Feedback provided by the user.
+- Additional context (if provided).
+
+**Example Prompt**:
+```plaintext
+Please do the following updates to the Summary based on the user's feedback:
+
+**Summary To be updated**:
+{summary}
+
+**User Feedback**:
+{feedback_from_user}
+
+**Additional Context**:
+{additional_context}
+```
+
+### **Instructions**
+The instructions guide the agent on how to modify the summary, including:
+- Focusing on specific user feedback.
+- Preserving the original length of the summary.
+- Adhering to proper markdown formatting.
+- Avoiding irrelevant changes to unaffected parts of the summary.
+
+**Key Guidelines**:
+- Do not add greetings or closing notes.
+- Avoid tabular data; use paragraph-style formatting.
+- Maintain proper markdown for headings and bullet points.
+
+### **Agent and Task**
+- **Agent**:
+  - Role: "Summary updater with Human Feedback Agent".
+  - Responsible for interpreting the user prompt and instructions.
+
+- **Task**:
+  - Name: "Update Summary by user feedback".
+  - Executes the agent's actions using the Azure OpenAI model.
+
+### **Pipeline**
+- **`LinearSyncPipeline`**:
+  - Orchestrates the task execution.
+  - Returns the updated summary as output.
+
+---
+
+## Dependencies
+- **`aih_automaton`**:
+  - Provides `Agent`, `Task`, and `LinearSyncPipeline` classes.
+- **`dotenv`**:
+  - Loads environment variables for Azure OpenAI credentials.
+- **`AzureOpenAIModel`**:
+  - Facilitates communication with Azure OpenAI for generating text.
+
+---
+
+## Environment Variables
+The script requires the following environment variables:
+- `API_Key`: Azure OpenAI API key.
+- `End_point`: Azure OpenAI endpoint URL.
+- `API_version`: Azure OpenAI API version.
+
+---
+
+## Example Usage
+
+### Code
+```python
+summary = "This is an example summary."
+feedback_from_user = "Make the introduction more engaging and add a call-to-action."
+previous_feedbacks = ["Focus on simplifying technical jargon."]
+additional_context = "This summary is intended for a general audience."
+
+updated_summary = retry_summary_update(
+    summary=summary,
+    feedback_from_user=feedback_from_user,
+    previous_feedbacks=previous_feedbacks,
+    additional_context=additional_context
+)
+print(updated_summary)
+```
+
+### Expected Output
+An updated summary that incorporates the user feedback, aligns with the additional context, and adheres to the specified formatting guidelines.
+
+---
+
+## Limitations
+- The updated summary is entirely dependent on the quality of user feedback and context provided.
+- Requires valid Azure OpenAI credentials to function.
+- Assumes the summary to be updated is in proper markdown format initially.
+
+---
+
+## Future Enhancements
+- Add multi-language support for summaries and feedback.
+- Enable dynamic adjustments for summary length based on user preference.
+- Provide validation or preview of updates before finalizing the summary.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation of summary update with user feedback.
+  - Integrated Azure OpenAI for text generation.
+
+---
+
+For further details, contact the development team or refer to the official `aih_automaton` and Azure OpenAI documentation.
+

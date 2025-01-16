@@ -1,0 +1,76 @@
+### Documentation for `query_text_embedding`
+
+```python
+async def query_text_embedding(query: Optional[str] = None, text: Optional[str] = None, model: AzureOpenAIEmbedding = None) -> Any:
+```
+
+#### Overview:
+This function generates embeddings for a given query or text using a specified model. The embeddings are numerical representations of the input text, which can be used in various natural language processing tasks like similarity measurement, clustering, or search.
+
+---
+
+#### Arguments:
+- **`query` (Optional[str]):**  
+  The query string for which to generate an embedding. If both `query` and `text` are provided, `query` takes precedence.
+
+- **`text` (Optional[str]):**  
+  The text string for which to generate an embedding.
+
+- **`model` (AzureOpenAIEmbedding):**  
+  The model used to generate embeddings. This should be an instance of `AzureOpenAIEmbedding` or a similar embedding model. If no model is specified, the function will raise an error.
+
+---
+
+#### Returns:
+- **`Any:`**  
+  The embedding generated from the input `query` or `text`. The type of the return value depends on the embedding model being used. Typically, it would be a vector (e.g., a list or numpy array of floats).
+
+---
+
+#### Raises:
+- **`ValueError:`**  
+  Raised when neither `query` nor `text` is provided.
+
+---
+
+#### Behavior:
+1. If `query` is provided, the embedding for the query will be generated and returned using the `get_query_embedding` method of the model.
+2. If `text` is provided (and `query` is not), the embedding for the text will be generated and returned using the `get_text_embedding` method of the model.
+3. If neither `query` nor `text` is provided, a `ValueError` is raised.
+
+---
+
+#### Example Usage:
+```python
+from aih_rag.embeddings.azure_openai import AzureOpenAIEmbedding
+import asyncio
+
+# Initialize the Azure OpenAI Embedding model
+model = AzureOpenAIEmbedding(
+    model="text-embedding-3-small",
+    azure_endpoint="https://your-endpoint.openai.azure.com",
+    api_key="your-api-key",
+    api_version="2024-02-01",
+    azure_deployment="text-embedding-3-small"
+)
+
+async def main():
+    query = "What is the capital of France?"
+    embedding = await query_text_embedding(query=query, model=model)
+    print("Query Embedding:", embedding)
+
+    text = "France is known for its rich culture and history."
+    embedding_text = await query_text_embedding(text=text, model=model)
+    print("Text Embedding:", embedding_text)
+
+# Run the async function
+asyncio.run(main())
+```
+
+---
+
+#### Notes:
+- **Precedence:** If both `query` and `text` are provided, the function will prioritize generating an embedding for `query`.
+- **Model Dependency:** Ensure that the provided `model` supports the methods `get_query_embedding` and `get_text_embedding`.
+
+---

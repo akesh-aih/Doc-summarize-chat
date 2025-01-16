@@ -1,0 +1,206 @@
+# Documentation: Chatbot with Azure OpenAI and DeepLake Integration
+
+## Overview
+This system enables a chatbot to process user queries by extracting relevant text from user-uploaded files or existing datasets, embedding the text using Azure OpenAI, and generating responses with a professional tone. It integrates Redis for caching responses and DeepLake for managing datasets.
+
+---
+
+## Features
+
+1. **File and Dataset Management**:
+   - Processes a variety of file types (e.g., PDF, DOCX, CSV) using the `FileTextExtractor`.
+   - Manages datasets dynamically for static and user-specific content.
+   - Saves and retrieves dataset mappings to/from a JSON file.
+
+2. **Embeddings**:
+   - Uses Azure OpenAI's embedding model (`text-embedding-3-small`) to generate embeddings for text chunks.
+
+3. **Query and Response Handling**:
+   - Retrieves relevant text chunks from datasets based on the query embedding.
+   - Generates chatbot-like responses using Azure OpenAI's `gpt-4o-glo-std` model.
+
+4. **Caching**:
+   - Integrates Redis for caching responses, reducing repeated computations for the same query.
+
+5. **Custom Error Logging**:
+   - Uses `loguru` for detailed debugging and logging of processing errors.
+
+---
+
+## Components
+
+### **1. Dataset Management**
+
+#### Functions
+
+- **`load_user_dataset_mapping()`**:
+  - Loads the user-to-dataset mapping from a JSON file (`user_dataset.json`).
+  - Returns a dictionary of mappings.
+
+- **`save_user_dataset_mapping(mapping)`**:
+  - Saves the updated user-to-dataset mapping to `user_dataset.json`.
+
+- **`get_user_dataset_path(user_id)`**:
+  - Retrieves the dataset path for a specific user ID.
+
+- **`update_user_dataset_path(user_id, dataset_path)`**:
+  - Updates the dataset mapping for a given user and saves it.
+
+- **`create_dataset_path(base_dir, subfolder, user_id=None)`**:
+  - Creates a unique dataset path for content or user-specific datasets using `uuid`.
+
+### **2. File Processing**
+
+#### Functions
+
+- **`process_and_store_files(file_paths, dataset_path, overwrite=False)`**:
+  - Processes multiple files, extracts text using `FileTextExtractor`, generates embeddings, and stores them in DeepLake datasets.
+
+- **`chunk_text(text, chunk_size=1000, overlap=100)`**:
+  - Splits text into overlapping chunks for better embedding representation.
+
+- **`initialize_store(dataset_path, overwrite=False)`**:
+  - Initializes a `DeepLakeManager` instance to manage datasets.
+
+### **3. Query Handling**
+
+#### Functions
+
+- **`fetch_relevant_chunks(query, dataset_paths)`**:
+  - Generates an embedding for the query and retrieves relevant text chunks from DeepLake datasets.
+
+- **`generate_chatbot_response(user_id, input_path, query, file_paths=[], base_dir="chatsupport\temp")`**:
+  - Core function to process user queries, retrieve relevant data, and generate responses.
+  - **Steps**:
+    1. Check Redis for cached responses.
+    2. Process static content and user-specific files.
+    3. Retrieve relevant chunks from datasets.
+    4. Use Azure OpenAI's GPT model to generate a response.
+    5. Cache the response in Redis for future use.
+
+---
+
+## Key Classes and Libraries
+
+### **1. `FileTextExtractor`**
+Extracts text from files (e.g., PDF, DOCX, HTML). Refer to the separate documentation for this class for details.
+
+### **2. `DeepLakeManager`**
+Manages datasets in DeepLake, allowing insertion and querying of text and embeddings.
+
+### **3. `AzureOpenAIEmbedding`**
+Generates embeddings for text using Azure OpenAI's embedding models.
+
+### **4. `AzureOpenAI`**
+Generates chatbot-like responses using Azure OpenAI's `gpt-4o-glo-std` model.
+
+### **5. `RedisCache`**
+Handles caching of responses for efficient query processing.
+
+---
+
+## Example Workflow
+
+### **1. Process Static Content**
+- Process and store static content files in the dataset.
+- Example:
+```python
+process_and_store_files(
+    file_paths=["path/to/file.pdf"],
+    dataset_path="path/to/dataset",
+    overwrite=True
+)
+```
+
+### **2. Generate Chatbot Response**
+- Example:
+```python
+generate_chatbot_response(
+    user_id="user123",
+    input_path="path/to/user_file.pdf",
+    query="Explain RAG in BFSI",
+    file_paths=["path/to/static_file.pdf"],
+    base_dir="chatsupport/temp"
+)
+```
+
+### **3. Fetch Relevant Chunks**
+- Retrieve relevant chunks for a query from multiple datasets.
+- Example:
+```python
+fetch_relevant_chunks(
+    query="Explain RAG mechanism",
+    dataset_paths=["path/to/content_dataset", "path/to/user_dataset"]
+)
+```
+
+---
+
+## Command-Line Usage
+
+### Arguments
+| Argument         | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| `--user_id`      | Unique user ID (required).                                                 |
+| `--input_path`   | Single file path for processing.                                           |
+| `--query`        | User's query (required).                                                   |
+| `--file_paths`   | List of file paths for static content (optional).                         |
+
+### Example Command
+```bash
+python chatbot.py --user_id user123 --query "Explain RAG in BFSI" --file_paths file_paths.json
+```
+
+---
+
+## Error Handling
+- **File Not Found**:
+  - Skips missing files and logs a warning.
+
+- **Dataset Initialization Error**:
+  - Logs an error if a dataset fails to initialize.
+
+- **Redis Cache Failure**:
+  - Falls back to generating a fresh response if Redis fails.
+
+---
+
+## Directory Structure
+```plaintext
+root/
+|-- chatbot.py
+|-- vector.py
+|-- structured_output.py
+|-- memory.py
+|-- extract_text.py
+|-- user_dataset.json
+|-- .env
+```
+
+---
+
+## Dependencies
+- `os`, `uuid`, `json`: Core Python libraries for file and data handling.
+- `dotenv`: For loading environment variables.
+- `loguru`: Advanced logging for debugging and error handling.
+- `RedisCache`: For caching query responses.
+- Azure OpenAI SDK for embedding and chat generation.
+
+---
+
+## Future Enhancements
+- Add support for additional file types.
+- Improve handling of large datasets with multi-threading.
+- Introduce advanced query filtering mechanisms.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation with integration of Azure OpenAI and DeepLake.
+  - Includes file processing, embedding generation, and query handling.
+
+---
+
+For further details, refer to specific documentation for the `FileTextExtractor` class and related components.
+

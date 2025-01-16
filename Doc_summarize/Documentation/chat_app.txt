@@ -1,0 +1,192 @@
+# Documentation: Streamlit Chatbot Application with Azure OpenAI and DeepLake Integration
+
+## Overview
+This application provides a chatbot interface built using Streamlit, Azure OpenAI, and DeepLake. Users can interact with the chatbot to retrieve information from uploaded documents or pre-generated summaries. The chatbot leverages embeddings and vector search to provide accurate responses based on user queries.
+
+---
+
+## Features
+
+1. **Streamlit-Based User Interface**:
+   - Allows users to upload documents and generate summaries.
+   - Provides a chat interface for interacting with the chatbot.
+
+2. **Azure OpenAI Integration**:
+   - Utilizes Azure OpenAI's embedding model (`text-embedding-3-small`) for text embeddings.
+   - Uses Azure OpenAI's GPT model (`gpt-35-turbo`) for generating chatbot responses.
+
+3. **DeepLake Integration**:
+   - Manages document embeddings and enables vector-based retrieval using DeepLake.
+
+4. **Customizable User Session**:
+   - Users can define their unique ID for personalized chat history and document handling.
+   - Stores chat history and provides the ability to download processed documents.
+
+---
+
+## Application Components
+
+### **1. Chatbot Initialization**
+- Initializes the chatbot with Azure OpenAI embeddings and GPT models.
+- Provides a `LinearSyncPipeline` for task execution.
+
+#### **Function: `chat_bot(messages)`**
+- **Description**: Generates a response for a list of chat messages using Azure OpenAI GPT.
+- **Parameters**:
+  - `messages` (list): Chat history messages in JSON format (roles: `system`, `user`, `assistant`).
+- **Returns**:
+  - `response` (str): The chatbot's response.
+
+---
+
+### **2. Document and Summary Handling**
+
+#### Document Upload and Summary Management
+- Users can upload documents, generate summaries, and download processed files.
+- Summaries and document metadata are stored in a user-specific directory.
+
+#### **Functionality**:
+1. **Document Upload**:
+   - Users upload documents via the sidebar.
+   - Stored in `assets/user-{user_id}/summaries`.
+
+2. **Summary Display**:
+   - Reads the latest summary from `summary.json`.
+   - Allows users to download the documents associated with the summary.
+
+---
+
+### **3. Chat Modes**
+
+#### Modes:
+- **Summary-Based Chat**:
+  - Retrieves information from pre-generated summaries.
+  - Initializes with a summary displayed to the user.
+
+- **Document-Based Chat**:
+  - Searches for relevant information directly in uploaded documents using vector search.
+  - Utilizes DeepLake to query the vector store with user embeddings.
+
+#### **Key Functions**
+
+1. **`VectorStoreQuery`**:
+   - Queries DeepLake for the most relevant document text based on user query embeddings.
+
+2. **`query_text_embedding(query, model)`**:
+   - Generates embeddings for user queries using Azure OpenAI.
+
+---
+
+### **4. Streamlit Interface**
+
+#### Sidebar
+- **Username Input**:
+  - Users can input a unique username.
+  - Automatically generates a random user ID if none is provided.
+
+- **Chat Option Selection**:
+  - Users can choose between `summary` and `document` chat modes.
+
+#### Main Interface
+- **Chat Input**:
+  - Provides a text input field for user queries.
+
+- **Chat History**:
+  - Displays the chat history, including user queries and bot responses.
+
+---
+
+## Code Walkthrough
+
+### **Initialization**
+- Loads environment variables using `dotenv`.
+- Configures Azure OpenAI embeddings and GPT model.
+- Initializes the DeepLake vector store.
+
+### **Session State Management**
+- Stores session data such as `messages`, `chat_history`, and `display_chat_history` in Streamlit's `session_state`.
+- Ensures chat history is persistent during the session.
+
+### **Chatbot Interaction**
+1. **Summary-Based Chat**:
+   - Reads summary from `summary.json`.
+   - Generates responses using the summary text.
+
+2. **Document-Based Chat**:
+   - Retrieves relevant text from documents using vector search.
+   - Constructs prompts for the GPT model based on user queries and retrieved text.
+
+### **Asynchronous Execution**
+- Uses `asyncio` to handle asynchronous tasks, ensuring efficient embedding generation and vector queries.
+
+---
+
+## Directory Structure
+```plaintext
+root/
+|-- chat.py                # Chatbot logic
+|-- summarize_app.py       # Summary generation logic
+|-- source/
+|   |-- utils.py           # Utility functions
+|   |-- vector_store/
+|       |-- utils.py       # Vector store utility functions
+|-- assets/
+|   |-- user-{user_id}/    # User-specific data
+|       |-- summaries/     # Summaries and metadata
+|       |-- deeplake/      # DeepLake datasets
+```
+
+---
+
+## Usage
+
+### **Running the Application**
+1. Install required dependencies:
+   ```bash
+   pip install streamlit aih-rag dotenv
+   ```
+
+2. Start the application:
+   ```bash
+   streamlit run app.py
+   ```
+
+### **Interacting with the Chatbot**
+1. Upload documents or use existing summaries.
+2. Select a chat mode (`summary` or `document`).
+3. Enter queries in the chat input field and view responses.
+
+---
+
+## Dependencies
+- **Libraries**:
+  - `streamlit`: For building the web interface.
+  - `dotenv`: For managing environment variables.
+  - `aih_rag`: For embedding generation and vector store operations.
+  - `asyncio`: For asynchronous task handling.
+
+---
+
+## Limitations
+- Requires Azure OpenAI credentials to function.
+- Relies on pre-generated summaries or document uploads.
+- Limited to the context provided by summaries or retrieved documents.
+
+---
+
+## Future Enhancements
+- Add support for multi-file upload and summary generation.
+- Enable real-time embedding updates for uploaded documents.
+- Expand to include additional GPT models for specific tasks.
+
+---
+
+## Changelog
+- **Version 1.0**:
+  - Initial implementation with summary and document-based chat modes.
+  - Integrated DeepLake and Azure OpenAI embeddings.
+
+---
+
+For further details, refer to the relevant module documentation or Streamlit's official documentation.
+
