@@ -122,10 +122,6 @@ Run the tests with:
 pytest
 ```
 
-### Contribution
-1. Fork the repository.
-2. Create a feature branch.
-3. Submit a pull request with detailed description.
 
 ## Future Enhancements
 - Support for additional document formats.
@@ -136,4 +132,8 @@ pytest
 [MIT License](LICENSE)
 
 ## Support
-For issues or questions, contact [ajinkya@ai-horizon.io,rushikesh@ai-horizon.io,akesh@ai-horizon.io].
+For issues or questions, 
+contact -:
+- ajinkya@ai-horizon.io,
+- rushikesh@ai-horizon.io,
+- akesh@ai-horizon.io.
