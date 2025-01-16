@@ -1,0 +1,179 @@
+[
+    {
+        "file": "C:\\Users\\Rushikesh\\Desktop\\Hridayam\\document_category\\test_2.png",
+        "feedback": "due date for it 23 Jan 2023 in payment_due_date key",
+        "updated_data": {
+            "supplier_details": {
+                "supplier_name": "NETWORK INTERNATIONAL LLC",
+                "supplier_address": "23RD STREET, OPP. AL SALAM MOSQUE, AL BARSHA 2, P.O. BOX 4487, DUBAI, UNITED ARAB EMIRATES",
+                "analysis": "The supplier name and address are clearly mentioned in the invoice under the 'From' section.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN RELOCATIONS",
+                "recipient_address": "RAS AL KHOR COMPLEX, DUBAI P.O BOX 51773 DUBAI, UAE",
+                "analysis": "The recipient name and address are clearly mentioned in the invoice under the 'To' section.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "MID_21102024_9908",
+                "analysis": "The invoice number is provided under the 'Tax Invoice No' section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN RELOCATIONS",
+                "analysis": "The customer name is mentioned in the 'To' section of the invoice.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100308865300003",
+                "analysis": "The VAT number of the recipient is provided under the 'Recipient's Tax Registration Number' section.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "21-Oct-2024",
+                "analysis": "The invoice date is provided under the 'Tax Invoice Date' section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "23-Jan-2023",
+                "analysis": "The payment due date was updated based on the RLHF feedback.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "None",
+                "analysis": "The job number is not mentioned in the provided text.",
+                "job_score": 0
+            },
+            "total_amount": {
+                "total_amount": "103.95",
+                "analysis": "The total amount including VAT is provided in the itemization section as 'Total (incl. VAT) (AED)'.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "4.95",
+                "analysis": "The VAT amount is provided in the itemization section as 'VAT (5%) (AED)'.",
+                "vat_score": 10
+            }
+        },
+        "updated": true
+    },
+    {
+        "file": "C:\\Users\\Rushikesh\\Desktop\\Hridayam\\document_category\\test_2.png",
+        "feedback": "due date for it 23 Jan 2023 in payment_due_date key",
+        "updated_data": {
+            "supplier_details": {
+                "supplier_name": "NETWORK INTERNATIONAL LLC",
+                "supplier_address": "23RD STREET, OPP. AL SALAM MOSQUE, AL BARSHA 2, P.O. BOX 4487, DUBAI, UNITED ARAB EMIRATES",
+                "analysis": "The supplier name and address are clearly mentioned in the invoice under the 'From' section.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN RELOCATIONS",
+                "recipient_address": "RAS AL KHOR COMPLEX, DUBAI P.O BOX 51773 DUBAI, UAE",
+                "analysis": "The recipient name and address are clearly mentioned in the invoice under the 'To' section.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "MID_21102024_9908",
+                "analysis": "The invoice number is provided under the 'Tax Invoice No' section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN RELOCATIONS",
+                "analysis": "The customer name is mentioned in the 'To' section of the invoice.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100308865300003",
+                "analysis": "The VAT number of the recipient is provided under the 'Recipient's Tax Registration Number' section.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "21-Oct-2024",
+                "analysis": "The invoice date is provided under the 'Tax Invoice Date' section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "23-Jan-2023",
+                "analysis": "The feedback provided the payment due date as '23 Jan 2023', which was not mentioned in the original text. The value has been updated accordingly.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "None",
+                "analysis": "The job number is not mentioned in the provided text and no feedback was provided to update it.",
+                "job_score": 0
+            },
+            "total_amount": {
+                "total_amount": "103.95",
+                "analysis": "The total amount including VAT is provided in the itemization section as 'Total (incl. VAT) (AED)'.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "4.95",
+                "analysis": "The VAT amount is provided in the itemization section as 'VAT (5%) (AED)'.",
+                "vat_score": 10
+            }
+        },
+        "updated": true
+    },
+    {
+        "file": "C:\\Users\\Rushikesh\\Desktop\\Hridayam\\document_category\\test_2.png",
+        "feedback": "due date for it 23 Jan 2023 in payment_due_date key",
+        "updated_data": {
+            "supplier_details": {
+                "supplier_name": "NETWORK INTERNATIONAL LLC",
+                "supplier_address": "23RD STREET, OPP. AL SALAM MOSQUE, AL BARSHA 2, P.O. BOX 4487, DUBAI, UNITED ARAB EMIRATES",
+                "analysis": "The supplier name and address are clearly mentioned in the invoice under the 'From' section.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN RELOCATIONS",
+                "recipient_address": "RAS AL KHOR COMPLEX, DUBAI P.O BOX 51773 DUBAI, UAE",
+                "analysis": "The recipient name and address are clearly mentioned in the invoice under the 'To' section.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "MID_21102024_9908",
+                "analysis": "The invoice number is provided under the 'Tax Invoice No' section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN RELOCATIONS",
+                "analysis": "The customer name is mentioned in the 'To' section of the invoice.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100308865300003",
+                "analysis": "The VAT number of the recipient is provided under the 'Recipient's Tax Registration Number' section.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "21-Oct-2024",
+                "analysis": "The invoice date is provided under the 'Tax Invoice Date' section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "23-Jan-2023",
+                "analysis": "The feedback provided the payment due date as '23-Jan-2023', which was not mentioned in the original text. The feedback has been integrated.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "None",
+                "analysis": "The job number is not mentioned in the provided text, and no feedback was provided for this field.",
+                "job_score": 0
+            },
+            "total_amount": {
+                "total_amount": "103.95",
+                "analysis": "The total amount including VAT is provided in the itemization section as 'Total (incl. VAT) (AED)'.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "4.95",
+                "analysis": "The VAT amount is provided in the itemization section as 'VAT (5%) (AED)'.",
+                "vat_score": 10
+            }
+        },
+        "updated": true
+    }
+]

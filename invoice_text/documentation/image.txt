@@ -1,0 +1,132 @@
+### Documentation for the Text Extraction Pipeline and Supporting Functions
+
+#### Overview
+This module provides utilities for extracting text from images and PDF files using Azure OpenAI Vision models and `pdfplumber`. The main functions include recursive file search, reading PDFs, extracting text from images, and creating a pipeline for text extraction.
+
+---
+
+#### **Functions**
+
+##### **`find_file_recursively(file_name, search_directory)`**
+Searches for a file recursively within a directory and its subdirectories.
+
+- **Parameters:**
+  - `file_name` (*str*): The name of the file to search for.
+  - `search_directory` (*str*): The root directory to start the search. Defaults to the current working directory.
+
+- **Returns:**
+  - *str*: The full path of the file if found.
+
+- **Raises:**
+  - `FileNotFoundError`: If the file is not found in the specified directory or its subdirectories.
+
+- **Example:**
+  ```python
+  file_path = find_file_recursively('example.pdf', '/path/to/search')
+  ```
+
+---
+
+##### **`read_pdf(path)`**
+Reads and extracts text from a PDF file.
+
+- **Parameters:**
+  - `path` (*str*): The file path of the PDF.
+
+- **Returns:**
+  - *str*: The extracted text from the PDF.
+
+- **Raises:**
+  - Exception: If the file is not a PDF or if an error occurs during processing.
+
+- **Example:**
+  ```python
+  pdf_text = read_pdf('/path/to/file.pdf')
+  ```
+
+---
+
+##### **`read_pdfs_text(pdf_names: List[str], search_directory=None)`**
+Reads text from multiple PDF files by their names.
+
+- **Parameters:**
+  - `pdf_names` (*List[str]*): A list of PDF file names.
+  - `search_directory` (*str*, optional): The directory to search for the files. Defaults to the current working directory.
+
+- **Returns:**
+  - *List[str]*: A list of extracted text from each PDF.
+
+- **Example:**
+  ```python
+  pdf_texts = read_pdfs_text(['doc1.pdf', 'doc2.pdf'], '/path/to/search')
+  ```
+
+---
+
+##### **`create_text_extraction_pipeline(image_path)`**
+Creates a text extraction pipeline for images using the Azure OpenAI Vision model.
+
+- **Parameters:**
+  - `image_path` (*str*): The file path of the image to extract text from. Supported formats include `.png`, `.jpeg`, `.jpg`, `.webp`, and `.gif`.
+
+- **Returns:**
+  - `LinearSyncPipeline`: A pipeline configured to extract text from the given image.
+
+- **Raises:**
+  - Exception: If the file format is not supported or if an error occurs during processing.
+
+- **Example:**
+  ```python
+  pipeline = create_text_extraction_pipeline('/path/to/image.png')
+  pipeline.run()
+  ```
+
+- **Pipeline Details:**
+  - **Agent:**
+    - Role: `Text extraction agent`
+    - Persona: Extracts and structures text from images.
+  - **Task:**
+    - Model: `AzureOpenAIVisionModel`
+    - Instructions: Provides a system persona for structured text extraction.
+  - **Supported Formats:** `.png`, `.jpeg`, `.jpg`, `.webp`, `.gif`
+
+---
+
+#### **Dependencies**
+- `os`: For file and directory operations.
+- `pdfplumber`: For reading and extracting text from PDF files.
+- `dotenv`: For loading environment variables.
+- `aih_automaton`: For creating agents, tasks, and pipelines.
+- `rich`: For enhanced console output.
+
+---
+
+#### **Environment Variables**
+The following environment variables must be set:
+- `API_Key`: Your Azure OpenAI API key.
+- `End_point`: The Azure OpenAI endpoint.
+- `API_version`: The API version.
+- `Engine`: The engine for Azure OpenAI Vision (e.g., `gpt-4-turbo-vision`).
+
+---
+
+#### **Usage Examples**
+
+1. **Extract Text from a PDF File:**
+   ```python
+   pdf_text = read_pdf('/path/to/document.pdf')
+   print(pdf_text)
+   ```
+
+2. **Extract Text from Multiple PDFs:**
+   ```python
+   pdf_texts = read_pdfs_text(['file1.pdf', 'file2.pdf'], '/search/directory')
+   for text in pdf_texts:
+       print(text)
+   ```
+
+3. **Extract Text from an Image:**
+   ```python
+   pipeline = create_text_extraction_pipeline('/path/to/image.png')
+   pipeline.run()
+   

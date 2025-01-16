@@ -1,0 +1,80 @@
+### Documentation for Image Text Extraction Code
+
+#### **Overview**
+This script defines a function `extract_image_text` that is responsible for extracting text from an image file. It uses a pre-defined text extraction pipeline to process the image and retrieve the textual content.
+
+---
+
+### **Components**
+
+#### **1. `create_text_extraction_pipeline`**
+- **Source**: Imported from the `image` module.
+- **Purpose**: Creates a pipeline that processes the image and extracts text.
+- **Returns**: A pipeline object capable of processing images for text extraction.
+
+#### **2. Function: `extract_image_text`**
+
+##### **Parameters**:
+- `image_path` (*str*): The file path to the image for text extraction.
+
+##### **Process**:
+1. **Create Pipeline**:
+   - The function invokes `create_text_extraction_pipeline(image_path)` to initialize a pipeline specific to the provided image.
+
+2. **Run the Pipeline**:
+   - Executes the pipeline using `.run()`.
+   - The pipeline processes the image and returns an output, which is a structured dictionary containing extracted data.
+
+3. **Extract Context**:
+   - The function accesses the `task_output` field in the first item of the `image_output` list to retrieve the extracted text.
+   - Retrieves the final content using `image_output.choices[0].message.content`.
+
+##### **Returns**:
+- A string containing the text extracted from the image.
+
+##### **Code**:
+```python
+from image import create_text_extraction_pipeline
+
+def extract_image_text(image_path):
+    image_pipeline = create_text_extraction_pipeline(image_path)
+    image_output = image_pipeline.run()
+    image_context = image_output[0]['task_output']
+    image_context = image_context.choices[0].message.content
+
+    return image_context
+```
+
+---
+
+### **Example Usage**
+```python
+from image import create_text_extraction_pipeline
+
+# Example image path
+image_path = "path/to/image.jpg"
+
+# Extract text from the image
+extracted_text = extract_image_text(image_path)
+print("Extracted Text:", extracted_text)
+```
+
+---
+
+### **Error Handling**
+- **Potential Issues**:
+  - If the `create_text_extraction_pipeline` function is not properly defined, the script will raise an ImportError.
+  - If the pipeline output does not match the expected structure, an `IndexError` or `KeyError` could occur.
+
+- **Suggestions**:
+  - Validate `image_path` to ensure the file exists before passing it to the pipeline.
+  - Add try-except blocks to gracefully handle exceptions during the pipeline execution or data extraction.
+
+---
+
+### **Future Improvements**
+1. Add detailed error handling to manage cases where the pipeline fails or returns unexpected results.
+2. Allow additional customization of the pipeline (e.g., different preprocessing options for different types of images).
+3. Optimize performance for handling large images or batches of images.
+
+---

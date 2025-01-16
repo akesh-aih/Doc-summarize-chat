@@ -1,0 +1,206 @@
+# FileTextExtractor Documentation
+
+## Overview
+
+The `FileTextExtractor` class provides utilities for extracting text from a variety of file formats. It supports PDF, DOCX, HTML, RTF, images, CSV, Excel files, and more. The class is designed with extensibility and modularity in mind, allowing for easy addition of support for new file types. Exception handling is incorporated to provide meaningful feedback in case of errors.
+
+---
+
+## Features
+
+- **Supports Multiple File Formats:** Extracts text from PDFs, DOCX, HTML, RTF, images, CSV, Excel, and XLSB files.
+- **Modular Design:** File-specific processing methods are organized, making it easy to extend support for additional formats.
+- **Error Handling:** Custom exceptions like `FileProcessingError` and `UnsupportedFileTypeError` provide clear feedback for issues.
+- **Integration with OCR:** Supports text extraction from image files using Tesseract OCR.
+- **Handles Tabular Data:** Converts CSV and Excel data into readable text.
+
+---
+
+## Class Definitions
+
+### 1. `FileProcessingError`
+
+A custom exception for handling errors during file processing.
+
+```python
+class FileProcessingError(Exception):
+    pass
+```
+
+### 2. `UnsupportedFileTypeError`
+
+A custom exception for unsupported file types.
+
+```python
+class UnsupportedFileTypeError(ValueError):
+    pass
+```
+
+### 3. `FileTextExtractor`
+
+Main class for extracting text from various file formats.
+
+#### Methods
+
+##### `process_pdf_file(filepath: str) -> str`
+- **Description:** Extracts text from a PDF file.
+- **Parameters:**
+  - `filepath` (str): Path to the PDF file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_text_file(filepath: str) -> str`
+- **Description:** Reads plain text from a `.txt` file.
+- **Parameters:**
+  - `filepath` (str): Path to the text file.
+- **Returns:** File content as text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_docx_file(filepath: str) -> str`
+- **Description:** Extracts text from a `.docx` file.
+- **Parameters:**
+  - `filepath` (str): Path to the DOCX file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_html_file(filepath: str) -> str`
+- **Description:** Extracts text from an HTML file by parsing it with BeautifulSoup.
+- **Parameters:**
+  - `filepath` (str): Path to the HTML file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_rtf_file(filepath: str) -> str`
+- **Description:** Extracts text from an RTF file using the `striprtf` library.
+- **Parameters:**
+  - `filepath` (str): Path to the RTF file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_image_file(filepath: str) -> str`
+- **Description:** Extracts text from an image using OCR (Tesseract).
+- **Parameters:**
+  - `filepath` (str): Path to the image file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_csv_file(filepath: str) -> str`
+- **Description:** Reads a CSV file and converts its content to plain text.
+- **Parameters:**
+  - `filepath` (str): Path to the CSV file.
+- **Returns:** Extracted data as text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_excel_file(filepath: str) -> str`
+- **Description:** Reads an Excel file and converts its content to plain text.
+- **Parameters:**
+  - `filepath` (str): Path to the Excel file.
+- **Returns:** Extracted data as text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `process_xlsb_file(filepath: str) -> str`
+- **Description:** Reads an XLSB file and converts its content to plain text.
+- **Parameters:**
+  - `filepath` (str): Path to the XLSB file.
+- **Returns:** Extracted data as text (str).
+- **Raises:**
+  - `FileProcessingError`
+
+##### `extract_text_from_file(path: str) -> str`
+- **Description:** Extracts text from a file based on its extension.
+- **Parameters:**
+  - `path` (str): Path to the file.
+- **Returns:** Extracted text (str).
+- **Raises:**
+  - `UnsupportedFileTypeError`
+
+---
+
+## Supported File Formats
+
+| Extension      | Description            |
+|----------------|------------------------|
+| `.pdf`         | PDF files              |
+| `.txt`         | Plain text files       |
+| `.docx`        | Word documents         |
+| `.html`, `.htm`| HTML files             |
+| `.rtf`         | Rich Text Format files |
+| `.jpg`, `.jpeg`, `.png`, `.tiff` | Image files (via OCR) |
+| `.csv`         | CSV files              |
+| `.xls`, `.xlsx`| Excel files            |
+| `.xlsb`        | Binary Excel files     |
+
+---
+
+## Example Usage
+
+```python
+from file_text_extractor import FileTextExtractor
+
+# Create an instance of the extractor
+extractor = FileTextExtractor()
+
+# Extract text from a PDF
+pdf_text = extractor.extract_text_from_file("example.pdf")
+print(pdf_text)
+
+# Extract text from a Word document
+docx_text = extractor.extract_text_from_file("example.docx")
+print(docx_text)
+```
+
+---
+
+## Error Handling
+
+### Exceptions Raised
+
+1. `FileProcessingError`
+   - Raised when there is an issue processing a file.
+
+2. `UnsupportedFileTypeError`
+   - Raised when attempting to process an unsupported file type.
+
+---
+
+## Dependencies
+
+- `pdfplumber`: For PDF text extraction.
+- `docx2txt`: For DOCX text extraction.
+- `BeautifulSoup`: For HTML text extraction.
+- `striprtf`: For RTF text extraction.
+- `pytesseract`: For image OCR.
+- `pandas`: For handling CSV and Excel files.
+- `pyxlsb`: For processing XLSB files.
+- `Pillow`: For image handling.
+
+---
+
+## Limitations
+
+- OCR accuracy depends on the quality of the image files.
+- Some advanced formatting in Excel or Word documents may not be preserved.
+- Files with unsupported extensions will raise an `UnsupportedFileTypeError`.
+
+---
+
+## Future Enhancements
+
+- Add support for additional file formats (e.g., `.epub`, `.pptx`).
+- Improve OCR handling for multi-language support.
+- Enhance error reporting with more granular feedback.
+
+---
+
+## Conclusion
+
+The `FileTextExtractor` class is a robust and extensible solution for extracting text from a wide range of file formats. Its modular design makes it easy to add new functionalities and adapt to various use cases.
+

@@ -1,0 +1,137 @@
+import json
+import uuid
+from concurrent.futures import ThreadPoolExecutor
+from category import *
+from index_fetch import *
+from rich import print
+import json
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+from loguru import logger
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Azure OpenAI
+azure_api_key = os.getenv("API_Key")
+azure_endpoint = os.getenv("End_point")
+azure_api_version = os.getenv("API_version")
+
+client = AzureOpenAI(
+    azure_endpoint=azure_endpoint,
+    api_key=azure_api_key,
+    api_version=azure_api_version
+)
+
+def generate_summry(feedback_data):
+    """
+    Generate a summary after reaching the threshold.
+    """
+    system_content = f"""
+    You are a professional financial statement parser designed to extract important details from financial statements. 
+    Your task is to analyze the data and generate a summary that highlights the overall intent and purpose of the financial statement.
+
+    Your summary should:
+    - Focus on key insights, such as financial obligations, stability, risks, or opportunities.
+    - Provide an overview of short-term and long-term financial priorities.
+    - Highlight the relevance of the financial data to decision-making or planning.
+    """
+
+    prompt = f"""
+Analyze the following financial statement data and generate a summary that highlights its intent and purpose:
+
+feedback_data: {feedback_data}
+
+Instructions:
+1. Focus on the overarching intent of the financial statement, such as emphasizing financial obligations, stability, or areas of improvement.
+2. Avoid mentioning specific dates unless they are critical to understanding the intent.
+3. Highlight the relevance of the data to financial decision-making, planning, or addressing specific risks or opportunities.
+4. Ensure the summary is concise, clear, and focused on the broader financial priorities.
+    """
+
+    messages = [
+        {"role": "system", "content": system_content},
+        {"role": "user", "content": prompt}
+    ]
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-glo-std",
+            messages=messages,
+            temperature=0.3
+        )
+        logger.debug("Generated response successfully.")
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        logger.error(f"Error in categorizing text: {e}")
+        return "An error occurred while categorizing the text."
+
+def count_elements_in_json(file_path, threshold=10):
+    """
+    Open a JSON file with a list structure, count its elements,
+    and generate a summary if the count exceeds a threshold.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if isinstance(data, list):
+            count = len(data)
+        else:
+            print("The internal structure of the JSON file is not a list.")
+            count = 0
+        
+        if count >= threshold:
+            summary = generate_summry(data)
+            return summary
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return ''
+
+def save_to_json(data, directory="output"):
+    """Save data to a JSON file with a UUID-based filename."""
+    import os
+    os.makedirs(directory, exist_ok=True)
+    file_name = f"{uuid.uuid4()}.json"
+    file_path = os.path.join(directory, file_name)
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+    print(f"Saved output to {file_path}")
+
+def indentify_context_fetcher(file_paths: list, feedback_path: str, threshold: int = 10):
+    """
+    Process files to extract document data and handle feedback in JSON.
+    Generates summaries if feedback count exceeds the threshold.
+    """
+    Output_result = []
+    summary = count_elements_in_json(feedback_path, threshold=threshold)
+    if summary:
+        print("Summary generated:", summary)
+
+    output = categorize_document(file_paths=file_paths)
+
+    def process_text_data(text_data):
+        """Fetch context and details for each document."""
+        file_path = text_data['file']
+        extracted_text = text_data['text']
+        document_type = text_data['document_type']
+        file_uuid = str(uuid.uuid4())
+        fetched_data = index_fetch(document_type, extracted_text,is_rlhf=False,feedback_intent=summary)
+        final_output = {
+            'uuid': file_uuid,
+            'file': file_path,
+            'document_type': document_type,
+            'final_data': fetched_data
+        }
+        return final_output
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        results = executor.map(process_text_data, output)
+
+    Output_result = list(results)
+    print(Output_result)
+    save_to_json(Output_result)
+
+    return Output_result

@@ -1,0 +1,178 @@
+# Documentation for Invoice Text Extractor Application
+
+## Overview
+The **Invoice Text Extractor Application** is a Streamlit-based tool designed to process various file types, extract text from them, and display the extracted content in a user-friendly interface. The application supports parallel processing for efficiency and provides an interactive UI for file upload and text visualization.
+
+---
+
+## Features
+1. **Supported File Types**:
+    - PDF
+    - Text Files (txt)
+    - Word Documents (docx, doc)
+    - HTML Files (html, htm)
+    - Rich Text Format (rtf)
+    - Image Files (jpg, png, jpeg, tiff)
+    - Spreadsheets (csv, xls, xlsx, xlsb)
+
+2. **Parallel Processing**:
+    - Leverages `ThreadPoolExecutor` for concurrent file processing.
+
+3. **Interactive User Interface**:
+    - File upload via the sidebar.
+    - Displays extracted text and file previews.
+    - Supports image enlargement.
+
+4. **Custom User Session**:
+    - Each user session is uniquely identified by a random user ID.
+
+---
+
+## Application Structure
+
+### 1. **Main Application (`main`)**
+- **Title**: `Invoice Text Extractor`
+- Initializes user session with a unique `user_id`.
+- Provides a sidebar for file uploads and user ID input.
+- Processes files when the user clicks the **Process Files** button.
+
+### 2. **File Processing Workflow**
+#### a. Save Uploaded Files (`save_uploaded_files`)
+- Saves uploaded files to a user-specific directory.
+- Ensures the directory exists before saving files.
+
+#### b. Fetch Invoice Text (`fetch_invoice_text`)
+- Extracts text based on the file type:
+  - **Documents**: Uses `FileTextExtractor`.
+  - **Images**: Uses `extract_image_text`.
+- Returns an error message for unsupported file formats.
+
+#### c. Process Single File (`process_single_file`)
+- Processes a single file by calling `fetch_invoice_text`.
+- Returns the extracted text or an error message.
+
+#### d. Process Multiple Files (`process_multiple_files`)
+- Processes multiple files in parallel using `ThreadPoolExecutor`.
+- Returns a list of extracted text results.
+
+---
+
+## Code Components
+
+### Allowed File Types
+```python
+ALLOWED_FILE_TYPES = [
+    "pdf", "txt", "docx", "html", "htm", "rtf", "jpg", "png", "jpeg", "tiff", "csv", "xls", "xlsx", "xlsb"
+]
+```
+Specifies the file types supported for text extraction.
+
+### File Uploads
+```python
+uploaded_files = st.sidebar.file_uploader(
+    "Upload files for text extraction and viewing",
+    type=ALLOWED_FILE_TYPES,
+    accept_multiple_files=True
+)
+```
+Allows users to upload multiple files of supported types.
+
+### Sidebar Input
+```python
+st.sidebar.header("File Uploads")
+user_id = st.sidebar.text_input("User ID", st.session_state.user_id)
+```
+Lets users input a custom `user_id`. Defaults to a randomly generated ID.
+
+### Text Extraction
+#### Example for PDF Files:
+```python
+def fetch_invoice_text(file_path):
+    if file_path.endswith('.pdf'):
+        return extract_text.extract_text_from_file(file_path)
+    # Additional logic for other file types.
+```
+Determines the extraction method based on file extension.
+
+### File Processing
+#### Parallel File Processing:
+```python
+def process_multiple_files(file_paths):
+    with ThreadPoolExecutor() as executor:
+        results = list(executor.map(process_single_file, file_paths))
+    return results
+```
+Uses `ThreadPoolExecutor` to process files concurrently for faster results.
+
+---
+
+## User Interface
+
+### File Display
+- Extracted text and previews are displayed in two columns:
+  - **Left Column**: File name and preview (image or PDF download option).
+  - **Right Column**: Extracted text displayed in a text area.
+
+#### Example for Image Files:
+```python
+if file_name.endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+    st.image(entry['file'], caption=file_name, use_column_width=True)
+```
+Displays the image with an option for enlargement.
+
+#### Example for PDF Files:
+```python
+if file_name.endswith('.pdf'):
+    with open(entry['file'], "rb") as pdf_file:
+        pdf_data = pdf_file.read()
+    st.download_button("Download PDF", pdf_data, file_name=file_name, mime="application/pdf")
+```
+Provides a download button for PDF files.
+
+---
+
+## How to Run the Application
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Run the Streamlit app:
+   ```bash
+   streamlit run app.py
+   ```
+
+3. Access the app in your browser at `http://localhost:8501`.
+
+---
+
+## File Structure
+```
+project/
+├── app.py                # Main Streamlit application
+├── extract_text.py       # File text extraction logic
+├── image_support.py      # Image text extraction logic
+├── uploads/              # Directory for uploaded files
+└── requirements.txt      # Python dependencies
+```
+
+---
+
+## Future Enhancements
+1. **Add Support for More File Types**:
+   - XML, JSON, and other formats.
+
+2. **Enhanced Text Extraction**:
+   - Improve OCR for images with complex layouts.
+
+3. **PDF Previews**:
+   - Add inline PDF viewing functionality.
+
+4. **Asynchronous Processing**:
+   - Leverage `asyncio` for non-blocking file processing.
+
+---
+
+## Conclusion
+This application provides a robust solution for extracting and visualizing text from various file types. Its simple and interactive interface, combined with efficient parallel processing, makes it a powerful tool for handling invoice-related data.
+

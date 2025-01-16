@@ -1,0 +1,51 @@
+from read import process_multiple_files
+from catgeorization import categorize_text
+from concurrent.futures import ThreadPoolExecutor
+
+def categorize_document(file_paths):
+    """
+    Process and categorize a list of documents by their type based on extracted text.
+
+    Args:
+        file_paths (list of str): List of file paths to process.
+
+    Returns:
+        list of dict: A list of dictionaries where each dictionary contains the file path, 
+        document type, reason for categorization, and extracted text.
+    """
+    output = []  # Initialize an empty list to store the results.
+
+    # Extract text from the files using the process_multiple_files function.
+    extracted_texts = process_multiple_files(file_paths)
+
+    def process_entry(entry):
+        """
+        Process each entry to categorize the document based on its extracted text.
+
+        Args:
+            entry (dict): A dictionary containing the file path and extracted text.
+
+        Returns:
+            dict: A dictionary containing the file path, document type, reason, and text.
+        """
+        text = entry['text']  # Extract the text content of the file.
+        file_path = entry['file']  # Get the file path.
+        
+        # Use the categorize_text function to determine the document type and reason.
+        result = categorize_text(text[:100])  # Use the first 100 characters for categorization.
+        
+        return {
+            "file": file_path,  # File path of the document.
+            "document_type": result['document_type'],  # Type of the document.
+            "reason": result['reason'],  # Reason for the categorization.
+            "text": text  # Full extracted text of the document.
+        }
+
+    # Use ThreadPoolExecutor to process entries in parallel for efficiency.
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        results = executor.map(process_entry, extracted_texts)  # Map each entry to the process_entry function.
+    
+    # Collect the results from the executor and store them in the output list.
+    output = list(results)
+
+    return output  # Return the categorized document results.

@@ -1,0 +1,174 @@
+### Documentation for the Code
+
+#### Overview
+This script is a comprehensive document parser that processes and extracts structured data from different types of documents, such as invoices, contracts, resumes, purchase orders, legal documents, and financial statements. It integrates Azure OpenAI models to provide structured outputs and incorporates user feedback using RLHF (Reinforcement Learning with Human Feedback) where applicable.
+
+---
+
+### Imports and Environment Setup
+```python
+import os
+import json
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+from loguru import logger
+from structured_output import invoice_data_extractor, purchase_order_data_extractor, contract_data_extractor, financial_statement_data_extractor
+```
+- **os**: For operating system operations like accessing environment variables.
+- **json**: For handling JSON data.
+- **dotenv.load_dotenv**: Loads environment variables from a `.env` file.
+- **AzureOpenAI**: SDK for accessing Azure OpenAI services.
+- **loguru.logger**: For structured logging.
+- **structured_output**: Includes functions for structured data extraction (e.g., `invoice_data_extractor`).
+
+```python
+load_dotenv()
+
+azure_api_key = os.getenv("API_Key")
+azure_endpoint = os.getenv("End_point")
+azure_api_version = os.getenv("API_version")
+
+client = AzureOpenAI(
+    azure_endpoint=azure_endpoint,
+    api_key=azure_api_key,
+    api_version=azure_api_version
+)
+```
+- Loads API keys and endpoint configurations.
+- Initializes the Azure OpenAI client with the given credentials.
+
+---
+
+### `fetch_invoice_data`
+#### Function Purpose:
+Extracts and validates data from invoice texts. It can also incorporate RLHF feedback for improved accuracy.
+
+**Parameters:**
+- `text` (str): The input text to parse.
+- `is_rlhf` (bool): Whether to incorporate RLHF feedback.
+- `feedback` (optional): Feedback data for validation and updates.
+
+**Key Features:**
+1. Extracts fields like invoice number, customer name, VAT number, etc.
+2. Validates fields with RLHF feedback, updating values, analysis, and scores where relevant.
+3. Assigns scores (10 if present and correct, 0 otherwise).
+4. Returns structured output using `invoice_data_extractor`.
+
+---
+
+### `fetch_contract_text`
+#### Function Purpose:
+Processes contract documents to extract structured details, incorporating RLHF feedback if required.
+
+**Parameters:**
+- `text` (str): Input text to process.
+- `is_rlhf` (bool): Whether to apply RLHF feedback.
+- `feedback` (optional): Feedback for validation.
+
+**Key Features:**
+1. Extracts details such as contract title, parties involved, payment terms, etc.
+2. Validates and updates fields based on RLHF feedback.
+3. Assigns scores and calculates overall contract quality and risk.
+4. Returns output in `contract_data_extractor` format.
+
+---
+
+### `fetch_purchase_order_text`
+#### Function Purpose:
+Extracts structured data from purchase orders, optionally using RLHF feedback for accuracy.
+
+**Parameters:**
+- `text` (str): Input purchase order text.
+- `is_rlhf` (bool): Whether to use RLHF feedback.
+- `feedback` (optional): Feedback for validation.
+
+**Key Features:**
+1. Extracts fields like purchase order number, supplier details, buyer details, etc.
+2. Validates and updates data using RLHF feedback.
+3. Calculates quality scores and overall risk assessment.
+4. Outputs results in `purchase_order_data_extractor` format.
+
+---
+
+### `fetch_financial_statement_data`
+#### Function Purpose:
+Processes financial statements to extract structured data.
+
+**Parameters:**
+- `text` (str): Input text for financial statement.
+- `is_rlhf` (bool): Whether to include RLHF feedback.
+- `feedback` (optional): Feedback for validation.
+
+**Key Features:**
+1. Extracts balance sheet, income statement, cash flow statement, and ratios.
+2. Assigns scores based on presence and completeness.
+3. Calculates financial health score and overall risk.
+4. Outputs structured data in `financial_statement_data_extractor` format.
+
+---
+
+### `fetch_resume_text`
+#### Function Purpose:
+Parses resumes to extract structured data such as personal information, employment history, and skills.
+
+**Parameters:**
+- `text` (str): Resume text to analyze.
+- `is_rlhf` (bool): Whether to use RLHF feedback.
+- `feedback` (optional): Feedback for validation.
+
+**Key Features:**
+1. Extracts personal details, employment history, education, skills, and certifications.
+2. Validates and updates fields using RLHF feedback.
+3. Calculates resume quality scores and provides detailed reasoning.
+4. Outputs results in `resume_data_extractor` format.
+
+---
+
+### `fetch_legal_document_text`
+#### Function Purpose:
+Extracts key details from legal documents, optionally incorporating RLHF feedback.
+
+**Parameters:**
+- `text` (str): Legal document text to parse.
+- `is_rlhf` (bool): Whether to apply RLHF feedback.
+- `feedback` (optional): Feedback for validation.
+
+**Key Features:**
+1. Extracts document title, parties involved, key clauses, and jurisdiction.
+2. Validates and updates fields based on feedback.
+3. Calculates quality and risk scores.
+4. Outputs structured data in `legal_document_data_extractor` format.
+
+---
+
+### `index_fetch`
+#### Function Purpose:
+Serves as the main function to route requests based on the document type.
+
+**Parameters:**
+- `document_type` (str): Type of document to process (e.g., Invoice, Contract).
+- `text` (str): Input text to analyze.
+- `is_rlhf` (bool): Whether to use RLHF feedback.
+- `feedback_intent` (optional): Feedback data for validation.
+
+**Workflow:**
+1. Determines the document type and routes to the appropriate fetch function.
+2. Returns structured data based on the document type.
+
+---
+
+### Example Usage:
+```python
+text = "Sample invoice text here..."
+document_type = "Invoice"
+is_rlhf = True
+feedback = {"field": "value"}
+
+output = index_fetch(document_type, text, is_rlhf, feedback)
+print(output)
+```
+
+---
+
+### Summary:
+This script leverages Azure OpenAI to process and extract structured data from various document types. It incorporates RLHF feedback for enhanced accuracy and outputs data in predefined formats for each document type. It is extensible, robust, and ideal for automation tasks involving document parsing.

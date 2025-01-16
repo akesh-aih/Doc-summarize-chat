@@ -1,0 +1,102 @@
+### Documentation for Invoice Text Extraction Script
+
+#### Overview
+This script provides functionality to extract text from various file formats, including PDFs, DOCX, TXT, HTML, RTF, images (JPG, PNG, etc.), and spreadsheets (CSV, XLS, XLSX, XLSB). It uses custom text extraction utilities for both textual and image-based files.
+
+---
+
+### Features
+- **Supported File Types**:
+  - Textual files: `.pdf`, `.docx`, `.txt`, `.html`, `.htm`, `.rtf`
+  - Spreadsheet files: `.csv`, `.xls`, `.xlsx`, `.xlsb`
+  - Image files: `.jpg`, `.png`, `.jpeg`
+- **Core Functionalities**:
+  - Extract text from individual files.
+  - Process multiple files in batch mode and extract their text.
+
+---
+
+### Dependencies
+- `extract_text`: Custom module used for extracting text from textual files.
+- `image_support`: Custom module used for extracting text from image files.
+
+---
+
+### Functions
+
+#### 1. `fetch_invoice_text(file_path)`
+Extracts text from a single file.
+
+- **Arguments**:
+  - `file_path (str)`: Path to the file to be processed.
+
+- **Returns**:
+  - `str`: Extracted text from the file.
+
+- **Supported Formats**:
+  - Textual files: `.pdf`, `.docx`, `.txt`, `.html`, `.htm`, `.rtf`, `.tiff`, `.csv`, `.xls`, `.xlsx`, `.xlsb`
+  - Image files: `.jpg`, `.png`, `.jpeg`
+
+- **Example**:
+  ```python
+  text = fetch_invoice_text("/path/to/invoice.pdf")
+  print(text)
+  ```
+
+#### 2. `process_multiple_files(file_paths)`
+Processes multiple files and fetches their text content.
+
+- **Arguments**:
+  - `file_paths (list[str])`: List of file paths to process.
+
+- **Returns**:
+  - `list`: A list of dictionaries containing the file path and the extracted text.
+    - Example Output:
+      ```json
+      [
+        {
+          "file": "path/to/file.pdf",
+          "text": "Extracted text from file"
+        },
+        {
+          "file": "path/to/image.jpg",
+          "text": "Extracted text from image"
+        }
+      ]
+      ```
+
+- **Example**:
+  ```python
+  file_paths = ["/path/to/invoice1.pdf", "/path/to/invoice2.png"]
+  extracted_texts = process_multiple_files(file_paths)
+  for entry in extracted_texts:
+      print(f"File: {entry['file']}\nText: {entry['text'][:100]}...")
+  ```
+
+---
+
+### Example Usage
+
+```python
+file_paths = [
+    r"C:\Users\Rushikesh\Desktop\POCS\crown_ww_poc\sample\test_1.png"
+]
+
+extracted_texts = process_multiple_files(file_paths)
+
+# Print or process the extracted texts
+for entry in extracted_texts:
+    print(f"File: {entry['file']}\nExtracted Text: {entry['text'][:500]}...\n")
+```
+
+---
+
+### Error Handling
+- Unsupported file formats are logged with the message: `Error: Unsupported file format or empty content.`
+- Exceptions raised during text extraction are handled gracefully.
+
+---
+
+### Notes
+- The script is extensible to support additional file formats by adding appropriate handlers in the `fetch_invoice_text` function.
+- Ensure `extract_text` and `image_support` modules are implemented and available in the environment.

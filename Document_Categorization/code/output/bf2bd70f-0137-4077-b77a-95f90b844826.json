@@ -1,0 +1,61 @@
+[
+    {
+        "uuid": "14a287c2-f10e-46d2-bafc-15d2a5b1419d",
+        "file": "temp_files\\test_1.png",
+        "document_type": "Invoice",
+        "final_data": {
+            "supplier_details": {
+                "supplier_name": "INTERNATIONAL MARITIME LOGISTICS",
+                "supplier_address": "P.O. Box 71000, Dubai, UAE",
+                "analysis": "The supplier name and address are clearly mentioned in the header information of the invoice.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN FINE ART",
+                "recipient_address": "DUBAI INVESTMENTS PARK 2 WAREHOUSE 597-607 DUBAI - UNITED ARAB EMIRATES",
+                "analysis": "The recipient name and address are provided under the customer and job information section.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "4103728486730003",
+                "analysis": "The invoice number is explicitly listed under the customer and job information section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN FINE ART",
+                "analysis": "The customer name is clearly mentioned under the customer and job information section.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100281055200003",
+                "analysis": "The VAT number is provided in the header information of the invoice.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "29-AUG-2024",
+                "analysis": "The invoice date is explicitly mentioned under the customer and job information section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "29-AUG-2024",
+                "analysis": "The payment due date is the same as the invoice date and is mentioned under the customer and job information section.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "W2HC-204825730071-1",
+                "analysis": "The job number is provided under the customer and job information section.",
+                "job_score": 10
+            },
+            "total_amount": {
+                "total_amount": "8605.00",
+                "analysis": "The total amount in AED is clearly mentioned under the financial details section.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "0.00",
+                "analysis": "The VAT amount is indicated as 0% under the financial details section.",
+                "vat_score": 10
+            }
+        }
+    }
+]

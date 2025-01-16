@@ -1,0 +1,120 @@
+[
+    {
+        "uuid": "5a8279b6-dd69-4b50-b4a1-2153add99527",
+        "file": "C:\\Users\\Rushikesh\\Desktop\\Hridayam\\document_category\\test_1.png",
+        "document_type": "Invoice",
+        "final_data": {
+            "supplier_details": {
+                "supplier_name": "INTERNATIONAL MARITIME LOGISTICS",
+                "supplier_address": "P.O. Box 7100, Dubai, UAE - DUBAI INVESTMENTS PARK 2, WAREHOUSE 597-A7",
+                "analysis": "The supplier details are clearly mentioned in the header and address sections of the invoice.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN FINE ART",
+                "recipient_address": "Not explicitly mentioned in the text",
+                "analysis": "The recipient name is mentioned in the customer details, but the address is not provided.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "4100388463000533",
+                "analysis": "The invoice number is clearly stated in the header section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN FINE ART",
+                "analysis": "The customer name is mentioned in the customer details section.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100281055200003",
+                "analysis": "The VAT number is provided in the customer details section.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "29-AUG-2024",
+                "analysis": "The invoice date is clearly mentioned in the header section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "29-AUG-2024",
+                "analysis": "The payment due date is clearly mentioned in the header section.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "W9C-2408257300071-1",
+                "analysis": "The job number is clearly mentioned in the header section.",
+                "job_score": 10
+            },
+            "total_amount": {
+                "total_amount": "8605.00 AED",
+                "analysis": "The total amount is clearly mentioned in the header section and line item details.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "0.00",
+                "analysis": "The VAT amount is clearly mentioned in the line item details.",
+                "vat_score": 10
+            }
+        }
+    },
+    {
+        "uuid": "5defde47-a4d7-43f7-85b9-0ff75b76de3f",
+        "file": "C:\\Users\\Rushikesh\\Desktop\\Hridayam\\document_category\\test_2.png",
+        "document_type": "Invoice",
+        "final_data": {
+            "supplier_details": {
+                "supplier_name": "NETWORK INTERNATIONAL LLC",
+                "supplier_address": "23RD STREET, OPP. AL SALAM MOSQUE, AL BARSHA 2 P.O.BOX 4487 DUBAI UNITED ARAB EMIRATES",
+                "analysis": "The supplier name and address are clearly mentioned under the sender information section.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN RELOCATIONS",
+                "recipient_address": "RAS AL KHOR COMPLEX, DUBAI P O BOX 51773 DUBAI UAE",
+                "analysis": "The recipient name and address are clearly mentioned under the recipient information section.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "MID_21102024_9908",
+                "analysis": "The invoice number is provided under the invoice details section as 'Tax Invoice No: MID_21102024_9908'.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN RELOCATIONS",
+                "analysis": "The customer name is the same as the recipient name, which is 'CROWN RELOCATIONS'.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100308865300003",
+                "analysis": "The VAT number for the recipient is provided under the tax registration numbers section as 'Recipient Tax Registration Number: 100308865300003'.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "21/Oct/2024",
+                "analysis": "The invoice date is provided under the invoice details section as 'Tax Invoice Date: 21/Oct/2024'.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "None",
+                "analysis": "The payment due date is not mentioned in the provided text.",
+                "due_date_score": 0
+            },
+            "job_number": {
+                "job_number": "None",
+                "analysis": "The job number is not mentioned in the provided text.",
+                "job_score": 0
+            },
+            "total_amount": {
+                "total_amount": "99",
+                "analysis": "The total amount before VAT is provided under the transaction details section as 'Amount (AED): 99'.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "4.95",
+                "analysis": "The VAT amount is provided under the transaction details section as 'VAT (5%): 4.95'.",
+                "vat_score": 10
+            }
+        }
+    }
+]

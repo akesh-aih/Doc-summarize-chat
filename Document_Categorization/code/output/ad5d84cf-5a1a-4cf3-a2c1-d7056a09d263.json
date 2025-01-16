@@ -1,0 +1,61 @@
+[
+    {
+        "uuid": "bdee81d2-db7c-460c-a2a3-6d60bb5b7a78",
+        "file": "temp_files\\test_1.png",
+        "document_type": "Invoice",
+        "final_data": {
+            "supplier_details": {
+                "supplier_name": "INTERNATIONAL MARITIME LOGISTICS",
+                "supplier_address": "P.O. Box 7100, Dubai, UAE",
+                "analysis": "The supplier details are clearly mentioned at the top of the invoice, including the name and address.",
+                "supplier_score": 10
+            },
+            "recipient_details": {
+                "recipient_name": "CROWN FINE ART",
+                "recipient_address": "DUBAI INVESTMENTS PARK 2, WAREHOUSE 597-627, DUBAI - UNITED ARAB EMIRATES",
+                "analysis": "The recipient details are clearly mentioned under the customer section, including the name and address.",
+                "recipient_score": 10
+            },
+            "invoice_number": {
+                "invoice_number": "-4103268842537063",
+                "analysis": "The invoice number is clearly mentioned under the details section.",
+                "invoice_score": 10
+            },
+            "customer_name": {
+                "customer_name": "CROWN FINE ART",
+                "analysis": "The customer name is clearly mentioned under the customer section.",
+                "customer_score": 10
+            },
+            "vat_number": {
+                "vat_number": "100287365003003",
+                "analysis": "The customer VAT number is clearly mentioned under the details section.",
+                "vat_score": 10
+            },
+            "invoice_date": {
+                "invoice_date": "29-AUG-2024",
+                "analysis": "The invoice date is clearly mentioned under the details section.",
+                "date_score": 10
+            },
+            "payment_due_date": {
+                "payment_due_date": "29-AUG-2024",
+                "analysis": "The payment due date is clearly mentioned under the details section.",
+                "due_date_score": 10
+            },
+            "job_number": {
+                "job_number": "W9C-240825730071-1",
+                "analysis": "The job number is clearly mentioned under the details section.",
+                "job_score": 10
+            },
+            "total_amount": {
+                "total_amount": "8605.00",
+                "analysis": "The total amount is clearly mentioned under the charge details section.",
+                "amount_score": 10
+            },
+            "vat_amount": {
+                "vat_amount": "0.00",
+                "analysis": "The VAT amount is clearly mentioned under the charge details section.",
+                "vat_score": 10
+            }
+        }
+    }
+]

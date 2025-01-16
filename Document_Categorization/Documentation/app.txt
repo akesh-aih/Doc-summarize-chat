@@ -1,0 +1,72 @@
+# AI Document Context Fetcher
+
+import streamlit as st
+import os
+import random
+import uuid
+from main import indentify_context_fetcher, count_elements_in_json, save_to_json  # Import necessary functions
+
+# Define constants
+ALLOWED_FILE_TYPES = [
+    "pdf", "txt", "docx", "html", "htm", "rtf", "jpg", "png", "jpeg", "tiff", "csv", "xls", "xlsx", "xlsb"
+]
+MAX_FILES = 10  # Maximum number of files that can be uploaded
+FEEDBACK_FILE_PATH = r"C:\Users\Rushikesh\Desktop\Hridayam\feedback.json"  # Static feedback file path
+
+# Streamlit Application
+def main():
+    st.title("AI Document Context Fetcher")  # Display the title of the application
+    st.sidebar.header("Settings")  # Add a header to the sidebar
+
+    # Initialize session state
+    if "user_id" not in st.session_state:
+        # Generate a random user ID if it doesn't exist in session state
+        st.session_state.user_id = f"{random.randint(1000, 9999)}{''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=4))}"
+
+    uuid = st.sidebar.text_input("Enter UUID (optional)", st.session_state.user_id)  # User input for UUID
+
+    # Document Upload
+    uploaded_files = st.file_uploader(
+        "Upload Documents", type=ALLOWED_FILE_TYPES, accept_multiple_files=True, key="doc_upload"
+    )
+    file_paths = []  # Initialize an empty list to store file paths
+
+    if uploaded_files:
+        temp_dir = "temp_files"  # Define a temporary directory for uploaded files
+        os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
+        for uploaded_file in uploaded_files:
+            file_path = os.path.join(temp_dir, uploaded_file.name)  # Construct the file path
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.read())  # Save the uploaded file
+            file_paths.append(file_path)  # Add the file path to the list
+        st.success("Documents uploaded successfully!")  # Display success message
+
+    # Process documents
+    if st.button("Process Documents"):
+        if not uploaded_files:
+            st.error("Please upload at least one document.")  # Show error if no documents are uploaded
+        else:
+            with st.spinner("Processing documents..."):
+                try:
+                    # Call the function from main.py with is_rlhf set to False
+                    results = indentify_context_fetcher(file_paths, FEEDBACK_FILE_PATH, threshold=10)
+                    st.success("Processing completed!")  # Show success message
+
+                    # Display results in the Streamlit UI
+                    st.json(results)  # Display results as JSON
+                except Exception as e:
+                    st.error(f"Error during processing: {str(e)}")  # Show error message if processing fails
+
+    # Optional: Display feedback summary
+    with st.spinner("Generating feedback summary..."):
+        try:
+            # Generate a summary from the feedback file
+            summary = count_elements_in_json(FEEDBACK_FILE_PATH, threshold=10)
+            if summary:
+                st.write("Feedback Summary:")  # Display feedback summary
+                st.success(summary)  # Show success message with the summary
+        except Exception as e:
+            st.error(f"Error generating summary: {str(e)}")  # Show error if summary generation fails
+
+if __name__ == "__main__":
+    main()  # Run the main application

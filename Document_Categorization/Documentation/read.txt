@@ -1,0 +1,167 @@
+# Documentation for the Text Extraction Script
+
+## Overview
+This script processes files of various formats to extract text content. It supports PDF, DOCX, TXT, HTML, image files, and more. Files are processed individually or in parallel using Python's `concurrent.futures.ThreadPoolExecutor`.
+
+---
+
+### **Code Explanation**
+
+#### **Imports and Initialization**
+```python
+import os
+from extract_text import FileTextExtractor
+from image_support import extract_image_text
+from concurrent.futures import ThreadPoolExecutor
+```
+- **os**: Used for file handling.
+- **FileTextExtractor**: A custom class to handle text extraction from text-based files.
+- **extract_image_text**: A function to extract text from image files.
+- **ThreadPoolExecutor**: Enables parallel processing of files for efficient execution.
+
+#### **Initialize the Text Extractor**
+```python
+# Initialize the text extractor
+extract_text = FileTextExtractor()
+```
+- Initializes an instance of `FileTextExtractor` to handle text-based file formats.
+
+#### **Allowed File Types**
+```python
+# Define allowed file types
+ALLOWED_FILE_TYPES = [
+    "pdf", "txt", "docx", "html", "htm", "rtf", "jpg", "png", "jpeg", "tiff", "csv", "xls", "xlsx", "xlsb"
+]
+```
+- Specifies the list of file types that the script can process.
+
+---
+
+### **Functions**
+
+#### **1. fetch_invoice_text**
+```python
+def fetch_invoice_text(file_path):
+    """
+    Extract text from a file based on its format.
+
+    Args:
+        file_path (str): Path to the file.
+
+    Returns:
+        str: Extracted text or an error message.
+    """
+    if file_path.endswith((".pdf", ".docx", ".txt", ".html", ".htm", ".rtf", ".tiff", ".csv", ".xls", ".xlsx", ".xlsb")):
+        return extract_text.extract_text_from_file(file_path)
+    elif file_path.endswith((".jpg", ".jpeg", ".png")):
+        return extract_image_text(file_path)
+    else:
+        return f"Unsupported file format: {file_path}"
+```
+- **Purpose**: Extracts text from a file based on its type.
+- **Arguments**:
+  - `file_path`: Path to the file to be processed.
+- **Returns**: Extracted text or an error message for unsupported formats.
+- **Logic**:
+  - Delegates text extraction to either `extract_text` or `extract_image_text` based on file type.
+  - Returns an error if the file type is unsupported.
+
+---
+
+#### **2. process_single_file**
+```python
+def process_single_file(file_path):
+    """
+    Process a single file to extract text.
+
+    Args:
+        file_path (str): Path to the file.
+
+    Returns:
+        dict: Dictionary containing file path and extracted text.
+    """
+    text = fetch_invoice_text(file_path)
+    if text:
+        return {'file': file_path, 'text': text}
+    else:
+        return {'file': file_path, 'text': 'Error: Unsupported file format or empty content.'}
+```
+- **Purpose**: Extracts text from a single file.
+- **Arguments**:
+  - `file_path`: Path to the file to be processed.
+- **Returns**: A dictionary containing the file path and extracted text.
+- **Logic**:
+  - Calls `fetch_invoice_text` to extract text.
+  - Returns the file path and text or an error message.
+
+---
+
+#### **3. process_multiple_files**
+```python
+def process_multiple_files(file_paths):
+    """
+    Process multiple files in parallel to extract text.
+
+    Args:
+        file_paths (list): List of file paths.
+
+    Returns:
+        list: List of dictionaries containing file paths and extracted texts.
+    """
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        results = list(executor.map(process_single_file, file_paths))
+    return results
+```
+- **Purpose**: Processes multiple files concurrently to extract text.
+- **Arguments**:
+  - `file_paths`: List of file paths to be processed.
+- **Returns**: A list of dictionaries containing file paths and extracted texts.
+- **Logic**:
+  - Uses `ThreadPoolExecutor` for parallel processing.
+  - Maps the `process_single_file` function to all file paths.
+  - Returns the results as a list.
+
+---
+
+### **Example Usage**
+```python
+# Example usage
+# if __name__ == "__main__":
+#     # Replace with your file paths
+#     file_paths = [
+#         r"C:\Users\Rushikesh\Desktop\Hridayam\document_category\Picture.pdf",
+#         r"C:\Users\Rushikesh\Desktop\Hridayam\document_category\test_2.png"
+#     ]
+
+#     # Process files and fetch extracted text
+#     extracted_texts = process_multiple_files(file_paths)
+
+#     # Display the extracted text for each file
+#     for entry in extracted_texts:
+#         print(f"File: {entry['file']}")
+#         print(f"Extracted Text: {entry['text']}")
+#         print("-" * 50)
+```
+- **Purpose**: Demonstrates how to use the script to process files and extract text.
+- **Steps**:
+  1. Define a list of file paths.
+  2. Call `process_multiple_files` to process all files.
+  3. Print the extracted text for each file.
+
+---
+
+### **Key Features**
+1. **Supports Multiple File Types**: Includes PDFs, DOCX, images, and more.
+2. **Parallel Processing**: Speeds up execution using multi-threading.
+3. **Error Handling**: Returns meaningful messages for unsupported or empty files.
+
+---
+
+### **Future Enhancements**
+- Add support for additional file types.
+- Implement detailed logging for better debugging.
+- Enhance error messages with suggestions for unsupported formats.
+
+---
+
+This documentation explains each part of the code in detail, providing a clear understanding of its functionality.
