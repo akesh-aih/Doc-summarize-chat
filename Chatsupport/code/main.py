@@ -4,7 +4,7 @@ import sys
 import json
 import uuid
 from dotenv import load_dotenv
-from vector import DeepLakeManager, add_custom_nodes, query_custom_embedding
+from External.vector import DeepLakeManager, add_custom_nodes, query_custom_embedding
 from aih_rag.embeddings.azure_openai import AzureOpenAIEmbedding
 from structured_output import chat_response
 from openai import AzureOpenAI

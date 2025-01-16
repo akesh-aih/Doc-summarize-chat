@@ -3,7 +3,7 @@ import json
 from dotenv import load_dotenv
 from openai import AzureOpenAI
 from loguru import logger
-from structured_output import categorization_document_generate
+from External.structured_output import categorization_document_generate
 from loguru import logger
 # Load environment variables
 load_dotenv()

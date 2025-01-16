@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 import json
-from RLHF import RLHF_operator  # Import the RLHF_operator function
+from Document_Categorization.code.RLHF import RLHF_operator  # Import the RLHF_operator function
 
 # Streamlit Application
 def main():

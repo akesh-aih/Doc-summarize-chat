@@ -1,8 +1,8 @@
 import json
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from category import *
-from index_fetch import *
+from Document_Categorization.code.category import *
+from Document_Categorization.code.index_fetch import *
 from rich import print
 
 

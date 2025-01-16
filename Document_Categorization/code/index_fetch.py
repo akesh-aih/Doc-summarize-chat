@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 from openai import AzureOpenAI
 from loguru import logger
-from structured_output import invoice_data_extractor,purchase_order_data_extractor,contract_data_extractor,financial_statement_data_extractor
+from External.structured_output import invoice_data_extractor,purchase_order_data_extractor,contract_data_extractor,financial_statement_data_extractor
 from loguru import logger
 # Load environment variables
 load_dotenv()

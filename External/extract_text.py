@@ -133,7 +133,7 @@ class FileTextExtractor:
         return processor(self, path)
 
 
-# # Example Usage
+# Example Usage
 # file_extractor = FileTextExtractor()
 # text = file_extractor.extract_text_from_file(
 #     r"C:\Users\Rushikesh\Desktop\Hridayam\summaizer\LongRAG Enhancing Retrieval-Augmented Generation with Long-context LLMs (1).pdf"

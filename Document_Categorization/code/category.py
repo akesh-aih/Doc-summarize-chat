@@ -1,5 +1,5 @@
 from read import process_multiple_files
-from catgeorization import categorize_text
+from Document_Categorization.code.catgeorization import categorize_text
 # from rich import print
 
 

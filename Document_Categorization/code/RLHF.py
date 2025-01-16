@@ -1,7 +1,7 @@
 import os
 import json
 import uuid
-from index_fetch import index_fetch
+from Document_Categorization.code.index_fetch import index_fetch
 from rich import print
 import os
 import json

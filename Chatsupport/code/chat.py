@@ -4,11 +4,11 @@ import sys
 import json
 import uuid
 from dotenv import load_dotenv
-from vector import DeepLakeManager, add_custom_nodes, query_custom_embedding
+from Chatsupport.code.vector import DeepLakeManager, add_custom_nodes, query_custom_embedding
 from aih_rag.embeddings.azure_openai import AzureOpenAIEmbedding
-from structured_output import chat_response
+# from structured_output import chat_response
 from openai import AzureOpenAI
-from extract_text import FileTextExtractor
+from Chatsupport.code.extract_text import FileTextExtractor
 from memory import RedisCache
 from loguru import logger
 # Load environment variables

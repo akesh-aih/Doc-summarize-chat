@@ -1,5 +1,5 @@
-from extract_text import FileTextExtractor
-from image_support import extract_image_text
+from External.extract_text import FileTextExtractor
+from External.image_support import extract_image_text
 
 
 # Initialize the text extractor

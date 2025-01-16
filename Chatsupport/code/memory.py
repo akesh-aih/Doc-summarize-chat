@@ -1,5 +1,4 @@
 import redis
-import json
 from loguru import logger
 
 class RedisCache:

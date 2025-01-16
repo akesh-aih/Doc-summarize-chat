@@ -1,10 +1,9 @@
 import streamlit as st
-import time
 import random
 import os
 from dotenv import load_dotenv
-from main import generate_chatbot_response
-from main import process_and_store_files
+from Chatsupport.code.main import generate_chatbot_response
+from Chatsupport.code.main import process_and_store_files
 
 root = os.getcwd()
 
